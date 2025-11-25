@@ -25,7 +25,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check active session
     const initAuth = async () => {
       try {
+        console.log('AuthContext: Initializing auth...')
         const { data: { session } } = await supabase.auth.getSession()
+        console.log('AuthContext: Session fetched', { hasSession: !!session, email: session?.user?.email })
         setSession(session)
         setUser(session?.user ?? null)
       } catch (error) {
@@ -39,7 +41,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      async (event, session) => {
+        console.log('AuthContext: Auth state changed', { event, hasSession: !!session, email: session?.user?.email })
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
@@ -60,11 +63,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   const signInWithEmail = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
     if (error) throw error
+    
+    // Update state immediately
+    if (data.session) {
+      setSession(data.session)
+      setUser(data.session.user)
+    }
+    
+    return data
   }
 
   const signUpWithEmail = async (email: string, password: string, fullName: string) => {

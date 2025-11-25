@@ -15,10 +15,13 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    if (user && !loading) {
-      router.push('/dashboard')
+    // Only redirect if we have a confirmed user and auth is not loading
+    if (!loading && user) {
+      console.log('User authenticated, redirecting to dashboard', { user: user.email })
+      // Force full page reload to trigger middleware validation
+      window.location.href = '/dashboard'
     }
-  }, [user, loading, router])
+  }, [user, loading])
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,10 +30,10 @@ export default function LoginPage() {
 
     try {
       await signInWithEmail(email, password)
-      router.push('/dashboard')
+      // Wait a moment for cookie to be set, then redirect will happen via useEffect
+      await new Promise(resolve => setTimeout(resolve, 100))
     } catch (err: any) {
       setError(err.message || 'Failed to sign in')
-    } finally {
       setIsLoading(false)
     }
   }
