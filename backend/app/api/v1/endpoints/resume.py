@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
-@router.post("/resume", response_model=ResumeUploadResponse)
+@router.post("/upload", response_model=ResumeUploadResponse)
 async def upload_resume(
     file: UploadFile = File(...),
     user_id: str = Depends(get_current_user_id)
@@ -48,7 +48,7 @@ async def upload_resume(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/parse/resume/{resume_id}", response_model=ResumeParseResponse)
+@router.post("/parse/{resume_id}", response_model=ResumeParseResponse)
 async def parse_resume(
     resume_id: str,
     user_id: str = Depends(get_current_user_id)
@@ -83,7 +83,7 @@ async def parse_resume(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/resume/{resume_id}")
+@router.get("/{resume_id}")
 async def get_resume(
     resume_id: str,
     user_id: str = Depends(get_current_user_id)

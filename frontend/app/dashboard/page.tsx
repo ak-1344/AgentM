@@ -37,9 +37,9 @@ export default function DashboardPage() {
       ])
 
       setProgress({
-        hasResume: resumeRes.status === 'fulfilled' && resumeRes.value?.length > 0,
-        hasContext: contextRes.status === 'fulfilled' && contextRes.value !== null,
-        hasSmtp: smtpRes.status === 'fulfilled' && smtpRes.value !== null,
+        hasResume: resumeRes.status === 'fulfilled' && resumeRes.value?.data?.length > 0,
+        hasContext: contextRes.status === 'fulfilled' && contextRes.value?.data !== null,
+        hasSmtp: smtpRes.status === 'fulfilled' && smtpRes.value?.data !== null,
         loading: false
       })
     } catch (error) {

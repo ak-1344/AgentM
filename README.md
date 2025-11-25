@@ -49,10 +49,13 @@ Agent M is an intelligent outreach automation platform that helps you:
 
 ### 🎯 Getting Started
 - **[Quick Start Guide](docs/setup/QUICKSTART.md)** - Get running in 10 minutes ⭐
+- **[Supabase Setup](docs/setup/SUPABASE_GUIDE.md)** - Database configuration ⭐
+- [Supabase Quick Start](docs/setup/SUPABASE_QUICKSTART.md) - 5-minute checklist
 - [Setup Checklist](docs/setup/SETUP_CHECKLIST.md) - Track your progress
 - [Documentation Index](docs/index.md) - Complete documentation navigation
 
 ### 🚢 Deployment
+- [Quick Deployment Guide](docs/deployment/DEPLOY.md) - Start here! (5-30 min) ⭐
 - [Deployment Overview](docs/deployment/Deployment_plan.md) - Choose your deployment strategy
 - [Track A: Vercel + Render](docs/deployment/vercel-deployment.md) - Production deployment (15 min)
 - [Track B: Oracle VM](docs/deployment/oracle-vm-deployment.md) - Self-hosted (1-2 hours)
@@ -64,8 +67,10 @@ Agent M is an intelligent outreach automation platform that helps you:
 - [Development Workflow](docs/guides/development.md) - Git workflow and best practices
 
 ### 📊 Reference
-- [Project Summary](docs/reference/PROJECT_SUMMARY.md) - Complete overview
-- [Status Report](docs/reference/STATUS_REPORT.md) - Current status & metrics
+- [Project Complete Report](docs/reference/PROJECT_COMPLETE.md) - Final completion status ⭐
+- [Completion Report](docs/reference/COMPLETION_REPORT.md) - Detailed overview
+- [Project Status](docs/reference/PROJECT_STATUS.md) - Current metrics
+- [What's New](docs/reference/WHATS_NEW.md) - Latest additions
 - [Database Schema](docs/reference/database.md) - Database reference
 - [Changelog](docs/reference/CHANGELOG.md) - Version history
 

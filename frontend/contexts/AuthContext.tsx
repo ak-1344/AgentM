@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error
   }
 
-  const signInWithEmail = async (email: string, password: string) => {
+  const signInWithEmail = async (email: string, password: string): Promise<void> => {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -74,8 +74,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setSession(data.session)
       setUser(data.session.user)
     }
-    
-    return data
   }
 
   const signUpWithEmail = async (email: string, password: string, fullName: string) => {
@@ -92,11 +90,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Create user profile
     if (data.user) {
-      await supabase.from('user_profiles').insert({
-        id: data.user.id,
-        email: data.user.email,
-        full_name: fullName,
-      })
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .upsert({
+          id: data.user.id,
+          email: data.user.email,
+          full_name: fullName,
+        } as any)
+      
+      if (profileError) {
+        console.error('Profile creation error:', profileError)
+      }
     }
   }
 

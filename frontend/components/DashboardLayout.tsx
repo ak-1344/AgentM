@@ -3,7 +3,7 @@
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { Mail, LogOut, FileText, Settings, BarChart3 } from 'lucide-react'
+import { Mail, LogOut, FileText, Settings, BarChart3, Inbox, Terminal } from 'lucide-react'
 import Link from 'next/link'
 
 interface DashboardLayoutProps {
@@ -68,6 +68,22 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             >
               <FileText className="w-5 h-5" />
               <span>Resume</span>
+            </Link>
+
+            <Link
+              href="/dashboard/emails"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <Inbox className="w-5 h-5" />
+              <span>Email Management</span>
+            </Link>
+            
+            <Link
+              href="/dashboard/logs"
+              className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <Terminal className="w-5 h-5" />
+              <span>Logs</span>
             </Link>
             
             <Link

@@ -49,13 +49,24 @@ export const api = {
   uploadResume: async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
-    return apiClient.post('/api/v1/upload/resume', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    
+    try {
+      const response = await apiClient.post('/api/v1/resume/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      return response
+    } catch (error: any) {
+      console.error('Resume upload error:', error.response?.data || error.message)
+      throw error
+    }
   },
 
   parseResume: async (resumeId: string) => {
-    return apiClient.post(`/api/v1/parse/resume/${resumeId}`)
+    return apiClient.post(`/api/v1/resume/parse/${resumeId}`)
+  },
+
+  getResumes: async () => {
+    return apiClient.get('/api/v1/resume')
   },
 
   // Context endpoints
@@ -67,6 +78,14 @@ export const api = {
     return apiClient.get('/api/v1/context')
   },
 
+  getContextProfile: async () => {
+    return apiClient.get('/api/v1/context')
+  },
+
+  getSmtpConfig: async () => {
+    return apiClient.get('/api/v1/smtp/credentials')
+  },
+
   // SMTP endpoints
   saveSmtpCredentials: async (credentials: any) => {
     return apiClient.post('/api/v1/smtp/credentials', credentials)
@@ -76,9 +95,40 @@ export const api = {
     return apiClient.post('/api/v1/smtp/test')
   },
 
-  // Email endpoints (Phase 1 - manual send)
+  // Email endpoints
   sendEmail: async (emailData: any) => {
     return apiClient.post('/api/v1/email/send', emailData)
+  },
+
+  // Email management endpoints (NEW)
+  generateEmail: async (companyData: any) => {
+    return apiClient.post('/api/v1/email/generate', companyData)
+  },
+
+  getEmails: async (status?: string) => {
+    const params = status ? { status } : {}
+    return apiClient.get('/api/v1/emails', { params })
+  },
+
+  getEmail: async (emailId: string) => {
+    return apiClient.get(`/api/v1/emails/${emailId}`)
+  },
+
+  updateEmailStatus: async (emailId: string, status: string) => {
+    return apiClient.patch(`/api/v1/emails/${emailId}/status`, { status })
+  },
+
+  updateEmailContent: async (emailId: string, content: string) => {
+    return apiClient.patch(`/api/v1/emails/${emailId}/content`, { content })
+  },
+
+  deleteEmail: async (emailId: string) => {
+    return apiClient.delete(`/api/v1/emails/${emailId}`)
+  },
+
+  // Logs endpoint (NEW)
+  getLogs: async (limit: number = 100) => {
+    return apiClient.get('/api/v1/logs', { params: { limit } })
   },
 
   // Health check

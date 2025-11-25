@@ -6,8 +6,9 @@ uvicorn[standard]==0.24.0
 python-multipart==0.0.6
 
 # Supabase & Database
-supabase==2.0.3
-postgrest-py==0.13.0
+supabase==2.3.4
+postgrest-py==0.10.6
+storage3==0.7.7
 psycopg2-binary==2.9.9
 
 # Authentication & Security
@@ -22,6 +23,11 @@ langchain==0.0.350
 langchain-openai==0.0.2
 tiktoken==0.5.2
 
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+
 # Document Processing
 PyPDF2==3.0.1
 python-docx==1.1.0
@@ -31,8 +37,8 @@ pdfplumber==0.10.3
 aiosmtplib==3.0.1
 email-validator==2.1.0
 
-# HTTP & API
-httpx==0.25.2
+# HTTP & API (compatible with postgrest-py)
+httpx<0.24.0,>=0.23.0
 requests==2.31.0
 
 # Task Queue (for Phase 4)

@@ -102,6 +102,90 @@ class EmailSendResponse(BaseModel):
     sent_at: Optional[datetime] = None
 
 
+# AI Email Management models
+class EmailGenerateRequest(BaseModel):
+    """Request to generate AI email"""
+    company_name: str
+    company_website: Optional[str] = None
+    company_location: Optional[str] = None
+    position_title: Optional[str] = None
+    job_type: Optional[str] = None
+    salary_range: Optional[str] = None
+    keywords: Optional[List[str]] = None
+    custom_prompt: Optional[str] = None
+
+
+class EmailResponse(BaseModel):
+    """AI Email response"""
+    id: str
+    user_id: str
+    recipient_email: str
+    recipient_name: Optional[str]
+    subject: str
+    content: str
+    company_name: Optional[str]
+    company_website: Optional[str]
+    company_location: Optional[str]
+    position_title: Optional[str]
+    keywords: List[str]
+    job_type: Optional[str]
+    salary_range: Optional[str]
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+
+class EmailUpdateStatusRequest(BaseModel):
+    """Request to update email status"""
+    status: str
+
+
+class EmailUpdateContentRequest(BaseModel):
+    """Request to update email content"""
+    subject: Optional[str] = None
+    content: Optional[str] = None
+    recipient_email: Optional[str] = None
+    recipient_name: Optional[str] = None
+
+
+class ChatMessageRequest(BaseModel):
+    """Chat message request"""
+    message: str
+
+
+class ChatMessageResponse(BaseModel):
+    """Chat message response"""
+    message: str
+    email_updated: bool
+
+
+class QuickActionRequest(BaseModel):
+    """Quick action request"""
+    action: str
+
+
+# Logs models
+class LogEntry(BaseModel):
+    """Activity log entry"""
+    id: str
+    user_id: str
+    level: str
+    action: str
+    message: str
+    details: Optional[dict]
+    related_entity_type: Optional[str]
+    related_entity_id: Optional[str]
+    created_at: datetime
+
+
+class LogsResponse(BaseModel):
+    """Logs list response"""
+    logs: List[LogEntry]
+    total: int
+    message: str
+    sent_at: Optional[datetime] = None
+
+
 # Error response
 class ErrorResponse(BaseModel):
     """Standard error response"""
