@@ -1,0 +1,87 @@
+# Caddyfile for Track B (Oracle VM) Deployment
+# Automatic HTTPS with Let's Encrypt
+
+# Frontend
+yourdomain.com, www.yourdomain.com {
+    # Reverse proxy to Next.js
+    reverse_proxy localhost:3000
+    
+    # Enable compression
+    encode gzip zstd
+    
+    # Security headers
+    header {
+        # Enable HSTS
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        
+        # Prevent clickjacking
+        X-Frame-Options "DENY"
+        
+        # Prevent MIME sniffing
+        X-Content-Type-Options "nosniff"
+        
+        # XSS protection
+        X-XSS-Protection "1; mode=block"
+        
+        # Referrer policy
+        Referrer-Policy "strict-origin-when-cross-origin"
+        
+        # Content Security Policy (adjust as needed)
+        Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+        
+        # Remove server header
+        -Server
+    }
+    
+    # Logging
+    log {
+        output file /var/log/caddy/frontend_access.log
+        format json
+    }
+}
+
+# Backend API
+api.yourdomain.com {
+    # Reverse proxy to FastAPI
+    reverse_proxy localhost:8000
+    
+    # Enable compression
+    encode gzip zstd
+    
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        -Server
+    }
+    
+    # CORS (handled by FastAPI, but can add here if needed)
+    
+    # Logging
+    log {
+        output file /var/log/caddy/api_access.log
+        format json
+    }
+}
+
+# Development/Testing (HTTP only - for testing before DNS setup)
+:80 {
+    # Route API requests
+    handle_path /api/* {
+        reverse_proxy localhost:8000
+    }
+    
+    # Route frontend requests
+    handle {
+        reverse_proxy localhost:3000
+    }
+}
+
+# Rate limiting (optional - requires rate_limit plugin)
+# (rate_limit) {
+#     zone rate_limit {
+#         key {remote_host}
+#         events 100
+#         window 1m
+#     }
+# }

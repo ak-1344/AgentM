@@ -1,0 +1,69 @@
+# Render Blueprint - Track A Deployment
+# This file configures automatic deployment on Render.com
+
+services:
+  # Backend API Service
+  - type: web
+    name: agentm-backend
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: BACKEND_CORS_ORIGINS
+        value: https://agentm.vercel.app
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+  # Background Worker (Phase 2+)
+  - type: worker
+    name: agentm-worker
+    env: python
+    region: oregon
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m app.workers.crawler
+    envVars:
+      - fromService:
+          type: web
+          name: agentm-backend
+          envVarKey: SUPABASE_URL
+      - fromService:
+          type: web
+          name: agentm-backend
+          envVarKey: SUPABASE_SERVICE_ROLE_KEY
+      - fromService:
+          type: web
+          name: agentm-backend
+          envVarKey: OPENAI_API_KEY
+      - fromService:
+          type: redis
+          name: agentm-redis
+          property: connectionString
+          envVarKey: REDIS_URL
+
+  # Redis for job queues (Phase 2+)
+  - type: redis
+    name: agentm-redis
+    region: oregon
+    plan: free
+    maxmemoryPolicy: noeviction
+    ipAllowList: []

@@ -1,0 +1,123 @@
+Here is the clean domain-wise division, and work per domain phase-wise, exactly as you asked.
+(No explanations — only structured partitions.)
+DOMAIN 1 — FRONTEND (Next.js)
+Phase 1
+• Dashboard UI
+• Resume upload UI
+• Context setup form
+Phase 2
+• Outbound Inbox (list of generated mails)
+• Email review + edit interface
+Phase 3
+• Approval / Reject buttons
+• Real-time updates (Supabase subscriptions)
+Phase 4
+• Analytics page
+• Follow-up scheduler UI
+Phase 5
+• Settings page
+• Reply-tracking UI
+DOMAIN 2 — BACKEND (API Layer)
+Phase 1
+• Auth integration
+• File storage endpoints
+• Resume parser endpoint
+• Context builder endpoint
+Phase 2
+• Company crawler trigger endpoint
+• Company storage model
+• Email draft generator endpoint
+Phase 3
+• Outbound inbox endpoints
+• Approval workflow endpoints
+• SMTP send endpoint
+Phase 4
+• Follow-up automation system
+• Scheduled task engine
+Phase 5
+• IMAP reply reader service
+• Analytics aggregation service
+DOMAIN 3 — DATABASE (Supabase / PostgreSQL)
+Phase 1
+• User table
+• Resume storage
+• Context profile
+Phase 2
+• Company table
+• Email draft table
+Phase 3
+• Outbound inbox table
+• Sent mail logs
+Phase 4
+• Follow-up schedule table
+Phase 5
+• Reply logs
+• Analytics materialized views
+DOMAIN 4 — AI ENGINE (LangChain / Custom)
+Phase 1
+• Resume → skills extraction
+• Context refinement bot
+Phase 2
+• Company relevance classifier
+• Company website summarizer
+Phase 3
+• Personalized email generator
+• Multi-template prompt builder
+Phase 4
+• Auto follow-up message generator
+• Tone/style variant generator
+Phase 5
+• AI reply classifier
+• Outcome prediction model
+DOMAIN 5 — WEB SCRAPING (Playwright / Scrapy)
+Phase 2
+• Domain-based company finder
+• Basic website crawler
+• Email extractor (regex + heuristics)
+Phase 3
+• Deep crawling: Careers / Contact pages
+• LinkedIn company extraction
+Phase 4
+• Automated periodic scraping
+• Priority scoring for companies
+Phase 5
+• Multi-source aggregation
+• Real-time enrichment
+DOMAIN 6 — EMAIL ENGINE (SMTP / NodeMailer / smtplib)
+Phase 1
+• SMTP connector
+• Manual send API
+Phase 3
+• Auto-send on approval
+• Delivery logs
+Phase 4
+• Scheduled follow-ups
+• Retry system
+Phase 5
+• IMAP read
+• Auto-classification & tagging
+DOMAIN 7 — TELEGRAM BOT (Approval Flow)
+Phase 3
+• Approve / Reject interface
+• Draft preview messages
+Phase 4
+• Follow-up reminders on Telegram
+• Send status updates
+Phase 5
+• Reply classification notifications
+• Complete pipeline monitoring
+DOMAIN 8 — DEVOPS / CLOUD
+Phase 1
+• Deploy frontend (Vercel)
+• Deploy backend (Render/Fly.io)
+• Supabase setup
+Phase 2
+• Queue system (Redis) setup
+• Crawler deployment
+Phase 3
+• Logging + monitoring
+Phase 4
+• Cron / scheduled jobs pipelines
+Phase 5
+• Scaling (API + scraper load balancing)
+If you want, I can also create:
