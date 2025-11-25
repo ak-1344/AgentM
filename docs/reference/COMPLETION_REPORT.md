@@ -337,7 +337,7 @@ Agent M is now a **fully functional, production-ready AI-powered automated outre
 **Time to Setup:** ~10 minutes
 
 ```bash
-./setup.sh
+./scripts/setup.sh
 docker-compose up -d
 open http://localhost:3000
 ```
@@ -462,7 +462,7 @@ npm test
 ```bash
 git clone <repository>
 cd AgentM
-./setup.sh
+./scripts/setup.sh
 docker-compose up -d
 ```
 

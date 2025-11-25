@@ -295,7 +295,7 @@ Structure ready for:
 
 ### To Develop:
 1. Clone repository
-2. Run `./setup.sh`
+2. Run `./scripts/setup.sh`
 3. Start coding
 4. Run tests with `pytest`
 

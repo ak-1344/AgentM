@@ -13,7 +13,7 @@ Use this checklist to track your setup progress. Check off items as you complete
 ## Step 1: Clone & Install
 
 - [ ] Cloned repository: `git clone https://github.com/ak-1344/AgentM.git`
-- [ ] Ran setup script: `./setup.sh`
+- [ ] Ran setup script: `./scripts/setup.sh`
 - [ ] Backend dependencies installed (pip)
 - [ ] Frontend dependencies installed (npm)
 - [ ] Virtual environment created for Python

@@ -218,7 +218,7 @@ React Components:     8+
 ### Local Development
 ```bash
 # Setup and start
-./setup.sh
+./scripts/setup.sh
 docker-compose up -d
 
 # View logs
@@ -298,7 +298,7 @@ docker-compose -f docker-compose.prod.yml ps
 ## 🎯 Next Steps for You
 
 ### Option 1: Test Locally (Recommended First)
-1. Run `./setup.sh`
+1. Run `./scripts/setup.sh`
 2. Follow `docs/setup/QUICKSTART.md`
 3. Test all features locally
 4. Then choose deployment strategy

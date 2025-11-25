@@ -2,14 +2,31 @@
 
 <div align="center">
 
-![Agent M](https://img.shields.io/badge/version-0.1.0-blue)
+![Agent M](https://img.shields.io/badge/version-1.0.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Python](https://img.shields.io/badge/python-3.11-blue)
+![Python](https://img.shields.io/badge/python-3.12-blue)
 ![Next.js](https://img.shields.io/badge/next.js-14.0-black)
+![Status](https://img.shields.io/badge/status-production--ready-success)
 
 **Automate your job search, sponsorship hunting, and freelance outreach with AI-powered personalized emails**
 
 </div>
+
+---
+
+## 🎉 Version 1.0.0 Released!
+
+We're excited to announce the first production-ready release of Agent M! This release includes:
+
+- ✅ Complete email management system with AI chatbot
+- ✅ Activity logging and monitoring  
+- ✅ Resume parsing and context building
+- ✅ SMTP integration for email sending
+- ✅ Full authentication with Supabase
+- ✅ Production-ready backend API
+- ✅ Responsive React/Next.js frontend
+
+**[📖 View Release Notes](docs/releases/v1.0.0.md)** | **[🚀 Quick Start Guide](docs/setup/QUICKSTART.md)**
 
 ---
 
@@ -23,7 +40,7 @@ git clone https://github.com/ak-1344/AgentM.git
 cd AgentM
 
 # 2. Run setup script
-./setup.sh
+./scripts/setup.sh
 
 # 3. Follow the guide
 # See docs/setup/QUICKSTART.md for detailed instructions
@@ -37,11 +54,12 @@ cd AgentM
 
 Agent M is an intelligent outreach automation platform that helps you:
 
-- 📧 **Send personalized emails at scale** - AI-powered email generation
-- 🤖 **Automate company discovery** - Web crawling and relevance scoring
-- 📊 **Track outreach performance** - Analytics and follow-up management
-- 🎯 **Smart targeting** - Role, industry, and location-based filtering
-- ⏰ **Intelligent follow-ups** - Automated sequences and scheduling
+- 📧 **Send personalized emails** - AI-powered email generation with GPT-4
+- 🤖 **AI Chatbot Assistant** - Review and refine emails conversationally
+- 📊 **Email Workflow Management** - New → Under Review → Approved → Rejected
+- 🎯 **Smart Context Building** - Resume parsing and profile management
+- ⏰ **Activity Monitoring** - Real-time logs with filtering and export
+- 🔐 **Secure by Design** - Encrypted credentials, RLS, JWT authentication
 
 ---
 
@@ -104,44 +122,80 @@ AgentM/
 ├── 🕷️ scraper/          # Web crawlers (Phase 2)
 ├── 📧 email_engine/     # Email services
 ├── 💬 telegram_bot/     # Telegram integration (Phase 3)
-└── 🚀 setup.sh          # Automated setup script
+└── 🚀 scripts/          # Setup and management scripts
 ```
 
 ---
 
-## ✅ Current Features (Phase 1)
+## ✅ Current Features (v1.0.0 - Phase 1 Complete)
 
-- ✅ User authentication (Email + Google OAuth)
+### 🤖 AI-Powered Email Management
+- ✅ GPT-4 powered email generation with company context
+- ✅ AI chatbot for reviewing and editing emails
+- ✅ Quick actions (make formal, casual, shorter, more engaging)
+- ✅ 4-stage workflow: New → Under Review → Approved → Rejected
+- ✅ Company metadata tracking (position, keywords, status)
+
+### 📊 Activity Monitoring
+- ✅ Real-time activity logs with auto-refresh
+- ✅ Filter by level (Info, Warning, Error, Success)
+- ✅ Export logs to JSON/CSV
+- ✅ Background activity tracking
+
+### 📄 Resume & Context
 - ✅ Resume upload (PDF/DOCX) with AI parsing
-- ✅ Context profile configuration
-- ✅ SMTP email credential management
-- ✅ Manual email sending
-- ✅ Secure password encryption (Fernet)
-- ✅ Row Level Security (RLS) on database
+- ✅ Automatic skill extraction
+- ✅ Context profile with target roles, industries, tone
+- ✅ Personalized email generation based on profile
+
+### 🔐 Security & Auth
+- ✅ User authentication (Email + Google OAuth)
+- ✅ JWT token-based API authentication
+- ✅ SMTP credential encryption (Fernet)
+- ✅ Row Level Security (RLS) on all database tables
+- ✅ Secure session management with @supabase/ssr
+
+### 🎨 User Interface
+- ✅ Responsive Next.js 14 frontend
+- ✅ Dashboard with progress tracking
+- ✅ Real-time data updates
+- ✅ Intuitive navigation and workflows
+
+### 🔧 Backend Infrastructure
+- ✅ FastAPI REST API with async operations
+- ✅ Comprehensive error handling and logging
+- ✅ Service-based architecture
+- ✅ Type-safe Pydantic models
+- ✅ Health check endpoints
+- ✅ OpenAPI/Swagger documentation
 
 ---
 
-## 🔜 Coming Soon
+## 🔜 Coming Soon (Future Phases)
 
-### Phase 2
-- Web crawling for company discovery
-- Automated email generation
-- Bulk email UI
+### Phase 2 - Automation
+- [ ] Web crawling for company discovery
+- [ ] Automated company relevance scoring
+- [ ] Batch email generation
+- [ ] Email scheduling and queuing
 
-### Phase 3
-- Outbound inbox with approval workflow
-- Telegram bot integration
-- Email delivery tracking
+### Phase 3 - Intelligence
+- [ ] Advanced email approval workflow
+- [ ] Telegram bot integration
+- [ ] Email delivery tracking
+- [ ] Automated follow-up sequences
 
-### Phase 4
-- Automated follow-up sequences
-- Analytics dashboard
-- Campaign scheduling
+### Phase 4 - Analytics
+- [ ] Performance analytics dashboard
+- [ ] A/B testing for email templates
+- [ ] Campaign success predictions
+- [ ] Advanced reporting and insights
 
-### Phase 5
-- Reply reading (IMAP)
-- AI reply classification
-- Success prediction
+### Phase 5 - Reply Intelligence
+- [ ] Reply reading (IMAP integration)
+- [ ] AI-powered reply classification
+- [ ] Response pattern analysis
+- [ ] Predictive success modeling
 
 ---
 
@@ -151,7 +205,7 @@ We welcome contributions! Please see our [Contributing Guide](docs/guides/CONTRI
 
 ```bash
 # Fork and clone
-git clone https://github.com/YOUR_USERNAME/AgentM.git
+git clone https://github.com/ak-1344/AgentM.git
 
 # Create feature branch
 git checkout -b feature/amazing-feature
@@ -180,6 +234,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Supabase for backend infrastructure
 - Vercel for hosting
 - All open-source contributors
+- Claude Sonnet 4.5 for documentation
+- Github Copilot for development assitance
 
 ---
 

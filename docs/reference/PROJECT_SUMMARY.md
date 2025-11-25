@@ -225,7 +225,7 @@ Configuration Files:    10+
 
 1. ✅ **Install Dependencies**
    ```bash
-   ./setup.sh  # Automated script
+   ./scripts/setup.sh  # Automated script
    ```
 
 2. ✅ **Create Supabase Project**

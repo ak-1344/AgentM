@@ -30,6 +30,12 @@ class SupabaseClient:
         return cls._instance
 
 
+# Convenience function for getting the client
+def get_supabase_client() -> Client:
+    """Get Supabase client instance"""
+    return SupabaseClient.get_client()
+
+
 # Convenience function
 def get_supabase() -> Client:
     """Get Supabase client"""

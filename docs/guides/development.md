@@ -21,7 +21,7 @@ git remote add upstream https://github.com/ak-1344/AgentM.git
 
 ```bash
 # Run setup script
-./setup.sh
+./scripts/setup.sh
 
 # Or manual setup:
 cd backend

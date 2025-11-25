@@ -230,8 +230,8 @@ git clone https://github.com/your-username/AgentM.git
 cd AgentM
 
 # Run setup script
-chmod +x setup.sh
-./setup.sh
+chmod +x scripts/setup.sh
+./scripts/setup.sh
 
 # Configure environment
 # Edit backend/.env and frontend/.env.local

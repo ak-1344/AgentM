@@ -136,7 +136,7 @@ AgentM/
 **Time:** 5 minutes  
 
 ```bash
-./setup.sh
+./scripts/setup.sh
 docker-compose up -d
 ```
 
@@ -237,7 +237,7 @@ Templates available:
 ### For Local Development
 ```bash
 # 1. Run setup
-./setup.sh
+./scripts/setup.sh
 
 # 2. Configure environment
 # Edit backend/.env and frontend/.env.local

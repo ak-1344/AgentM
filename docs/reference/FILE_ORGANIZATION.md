@@ -184,7 +184,7 @@ backend/           # FastAPI application
 
 ### 🚀 Getting Started
 1. Read `START_HERE.md`
-2. Run `./setup.sh`
+2. Run `./scripts/setup.sh`
 3. Follow `docs/setup/QUICKSTART.md`
 
 ### 🗄️ Setup Database

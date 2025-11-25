@@ -116,7 +116,9 @@ AgentM/
 │   └── config_history.md
 │
 ├── 🚀 Setup Files
-│   ├── setup.sh            (Automated setup script)
+│   ├── scripts/
+│   │   ├── setup.sh        (Automated setup script)
+│   │   └── backend.sh      (Backend management)
 │   ├── docker-compose.yml  (Full stack)
 │   ├── QUICKSTART.md       (10-min guide)
 │   ├── SETUP_CHECKLIST.md  (Progress tracker)
@@ -265,7 +267,7 @@ AgentM/
 
 1. **Run Setup Script**
    ```bash
-   ./setup.sh
+   ./scripts/setup.sh
    ```
 
 2. **Create Accounts**
