@@ -1,6 +1,13 @@
 # Backend Dockerfile for Agent M
+# Optimized for Render.com deployment
 
 FROM python:3.11-slim
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
 # Set working directory
 WORKDIR /app
@@ -22,15 +29,17 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy application code
 COPY . .
 
-# Create uploads directory
-RUN mkdir -p uploads temp
+# Create necessary directories with proper permissions
+RUN mkdir -p uploads temp logs && \
+    chmod -R 755 uploads temp logs
 
-# Expose port
-EXPOSE 8000
+# Expose port (Render provides PORT env variable)
+EXPOSE ${PORT:-8000}
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:${PORT:-8000}/health || exit 1
 
-# Run application
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run application with dynamic port binding
+# Render automatically provides $PORT environment variable
+CMD uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 1 --log-level info
