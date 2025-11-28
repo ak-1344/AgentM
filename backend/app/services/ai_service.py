@@ -26,14 +26,14 @@ class AIService:
     async def parse_resume_text(self, resume_text: str) -> ParsedResumeData:
         """
         Parse resume text using Gemini (Text-based)
-        Fallback when file parsing fails or for better reliability
+        Uses the google.genai.Client() format for guaranteed JSON response
         """
         try:
             logger.info("Parsing resume text with Gemini...")
             
-            # Use Parser Key if available, else fallback
-            api_key = settings.GOOGLE_API_KEY_PARSER or settings.GOOGLE_API_KEY
-            client = self._get_client(api_key)
+            # Use GENERATOR key for parsing as per user requirement
+            api_key = settings.GOOGLE_API_KEY_GENERATOR or settings.GOOGLE_API_KEY
+            client = genai.Client(api_key=api_key)
             
             prompt = f"""
             You are an expert resume parser. Analyze the following resume text and extract structured information.
@@ -44,7 +44,7 @@ class AIService:
             Extract and return the following information in JSON format:
             {{
                 "name": "Candidate Name",
-                "links": ["Platform: URL", ...],
+                "links": {{"LinkedIn": "url", "GitHub": "url", "Portfolio": "url"}},
                 "skills": ["skill1", "skill2", ...],
                 "experience_years": <number or null>,
                 "education": ["degree1", "degree2", ...],
@@ -54,21 +54,23 @@ class AIService:
             
             Rules:
             - Extract the candidate's full name
-            - Extract all profile links (LinkedIn, GitHub, Portfolio, etc.) with platform name
+            - Extract all profile links as key-value pairs where key is the platform name (LinkedIn, GitHub, Portfolio, Website, etc.) and value is the URL
             - Extract all technical and soft skills mentioned
             - Calculate total years of experience if possible
             - List all degrees and certifications
             - List all job titles held
             - Extract key achievements and accomplishments
             - Return only valid JSON
+            - For links, use platform names as keys (e.g., "LinkedIn", "GitHub", "Portfolio", "Website")
             """
             
-            # Use gemini-pro for text parsing as it's reliable
+            # Use the guaranteed response format with GENERATOR model
             response = client.models.generate_content(
-                model=settings.GEMINI_MODEL_PARSER, 
+                model=settings.GEMINI_MODEL_GENERATOR, 
                 contents=prompt,
                 config=types.GenerateContentConfig(
-                    response_mime_type="application/json"
+                    response_mime_type="application/json",
+                    temperature=0.3  # Lower temperature for more consistent parsing
                 )
             )
             
@@ -76,15 +78,16 @@ class AIService:
             content = response.text
             parsed = json.loads(content)
             
+            logger.info(f"Successfully parsed resume for: {parsed.get('name', 'Unknown')}")
+            
             return ParsedResumeData(**parsed)
             
         except Exception as e:
             logger.error(f"AI resume text parsing error: {e}", exc_info=True)
             # Return default structure on error
-            # Return default structure on error
             return ParsedResumeData(
                 name=None,
-                links=[],
+                links={},
                 skills=[],
                 experience_years=None,
                 education=[],
@@ -94,14 +97,15 @@ class AIService:
 
     async def parse_resume_file(self, file_content: bytes, mime_type: str) -> ParsedResumeData:
         """
-        Parse resume file using Gemini 1.5 Flash (Native File Support)
+        Parse resume file using Gemini (Native File Support)
+        PARSER model extracts text from PDF/DOCX files
         """
         try:
-            logger.info("Parsing resume file with Gemini...")
+            logger.info("Parsing resume file with Gemini PARSER model...")
             
-            # Use Parser Key if available, else fallback
+            # Use PARSER Key for file extraction (multimodal capability)
             api_key = settings.GOOGLE_API_KEY_PARSER or settings.GOOGLE_API_KEY
-            client = self._get_client(api_key)
+            client = genai.Client(api_key=api_key)
             
             prompt = """
             Analyze the attached resume document and extract structured information.
@@ -109,7 +113,7 @@ class AIService:
             Extract and return the following information in JSON format:
             {
                 "name": "Candidate Name",
-                "links": ["Platform: URL", ...],
+                "links": {"LinkedIn": "url", "GitHub": "url", "Portfolio": "url"},
                 "skills": ["skill1", "skill2", ...],
                 "experience_years": <number or null>,
                 "education": ["degree1", "degree2", ...],
@@ -119,13 +123,14 @@ class AIService:
             
             Rules:
             - Extract the candidate's full name
-            - Extract all profile links (LinkedIn, GitHub, Portfolio, etc.) with platform name
+            - Extract all profile links as key-value pairs where key is the platform name (LinkedIn, GitHub, Portfolio, Website, etc.) and value is the URL
             - Extract all technical and soft skills mentioned
             - Calculate total years of experience if possible
             - List all degrees and certifications
             - List all job titles held
             - Extract key achievements and accomplishments
             - Return only valid JSON
+            - For links, use platform names as keys (e.g., "LinkedIn", "GitHub", "Portfolio", "Website")
             """
             
             response = client.models.generate_content(
@@ -151,10 +156,9 @@ class AIService:
         except Exception as e:
             logger.error(f"AI resume parsing error: {e}", exc_info=True)
             # Return default structure on error
-            # Return default structure on error
             return ParsedResumeData(
                 name=None,
-                links=[],
+                links={},
                 skills=[],
                 experience_years=None,
                 education=[],
@@ -165,13 +169,14 @@ class AIService:
     async def refine_context(self, context_data: dict) -> dict:
         """
         Refine user context with AI suggestions
+        CHATBOT model provides conversational analysis
         """
         try:
-            logger.info("Refining context with AI...")
+            logger.info("Refining context with AI CHATBOT model...")
             
-            # Use Chatbot Key if available
+            # Use CHATBOT Key for conversation and analysis
             api_key = settings.GOOGLE_API_KEY_CHATBOT or settings.GOOGLE_API_KEY
-            client = self._get_client(api_key)
+            client = genai.Client(api_key=api_key)
             
             prompt = f"""
             Analyze the following user context and provide refinements:
@@ -208,6 +213,74 @@ class AIService:
             logger.error(f"AI context refinement error: {e}", exc_info=True)
             return context_data
     
+    async def generate_context_suggestions(self, parsed_resume: ParsedResumeData) -> dict:
+        """
+        Generate context suggestions based on parsed resume data
+        GENERATOR model creates text suggestions efficiently
+        """
+        try:
+            logger.info("Generating context suggestions with GENERATOR model...")
+            
+            # Use GENERATOR Key for text generation
+            api_key = settings.GOOGLE_API_KEY_GENERATOR or settings.GOOGLE_API_KEY
+            client = genai.Client(api_key=api_key)
+            
+            # Build resume context for the prompt
+            skills_str = ', '.join(parsed_resume.skills) if parsed_resume.skills else 'None provided'
+            job_titles_str = ', '.join(parsed_resume.job_titles) if parsed_resume.job_titles else 'None provided'
+            education_str = ', '.join(parsed_resume.education) if parsed_resume.education else 'None provided'
+            
+            prompt = f"""
+            Based on the following resume data, suggest appropriate job search context:
+            
+            Resume Information:
+            - Name: {parsed_resume.name or 'Not provided'}
+            - Skills: {skills_str}
+            - Job Titles/Experience: {job_titles_str}
+            - Education: {education_str}
+            - Years of Experience: {parsed_resume.experience_years or 'Unknown'}
+            
+            Provide smart suggestions for:
+            1. **suggested_roles**: 5-7 relevant job titles the person should target (be specific, considering their background)
+            2. **suggested_industries**: 4-6 industries that match their profile
+            3. **suggested_keywords**: 8-12 important keywords for their job search (skills, technologies, methodologies)
+            4. **suggested_geography**: 3-5 locations/regions that typically have opportunities in their field (can include "Remote")
+            
+            Return ONLY valid JSON in this exact format:
+            {{
+                "suggested_roles": ["role1", "role2", ...],
+                "suggested_industries": ["industry1", "industry2", ...],
+                "suggested_keywords": ["keyword1", "keyword2", ...],
+                "suggested_geography": ["location1", "location2", ...]
+            }}
+            """
+            
+            response = client.models.generate_content(
+                model=settings.GEMINI_MODEL_CHATBOT,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    temperature=0.7
+                )
+            )
+            
+            # Parse JSON response
+            content = response.text
+            suggestions = json.loads(content)
+            
+            logger.info(f"Generated suggestions: {suggestions}")
+            return suggestions
+            
+        except Exception as e:
+            logger.error(f"AI context suggestions error: {e}", exc_info=True)
+            # Return empty suggestions on error
+            return {
+                "suggested_roles": [],
+                "suggested_industries": [],
+                "suggested_keywords": [],
+                "suggested_geography": []
+            }
+    
     async def generate_email(
         self,
         company_name: str,
@@ -217,13 +290,14 @@ class AIService:
     ) -> dict:
         """
         Generate personalized email for a company
+        GENERATOR model creates compelling outreach emails
         """
         try:
-            logger.info(f"Generating email for {company_name}...")
+            logger.info(f"Generating email for {company_name} with GENERATOR model...")
             
-            # Use Generator Key if available
+            # Use GENERATOR Key for email generation
             api_key = settings.GOOGLE_API_KEY_GENERATOR or settings.GOOGLE_API_KEY
-            client = self._get_client(api_key)
+            client = genai.Client(api_key=api_key)
             
             prompt = f"""
             Generate a personalized outreach email.

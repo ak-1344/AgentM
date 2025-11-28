@@ -47,13 +47,15 @@ class ResumeService:
             # Extract text from resume (Restored)
             extracted_text = self._extract_text(content, file.content_type)
             
-            # Create database record
+            # Create database record with upload completed status
             resume_data = {
                 "user_id": user_id,
                 "file_name": file.filename,
                 "file_path": file_path,
                 "extracted_text": extracted_text,
-                "parsed_data": None # Explicitly null to indicate pending parse
+                "parsed_data": None, # Explicitly null to indicate pending parse
+                "is_upload_completed": True,  # Mark upload as completed
+                "is_parse_completed": False   # Parse not done yet
             }
             
             db_response = self.supabase.table("resumes").insert(resume_data).execute()
@@ -63,6 +65,8 @@ class ResumeService:
                 "resume_id": resume_record["id"],
                 "file_name": file.filename,
                 "file_path": file_path,
+                "is_upload_completed": True,
+                "is_parse_completed": False,
                 "message": "Resume uploaded successfully. Parsing pending."
             }
             
@@ -89,7 +93,7 @@ class ResumeService:
             raise
     
     async def save_parsed_data(self, resume_id: str, user_id: str, parsed_data: any):
-        """Save parsed resume data to database"""
+        """Save parsed resume data to database and mark parse as completed"""
         try:
             # Convert Pydantic model to dict if needed
             if hasattr(parsed_data, "model_dump"):
@@ -99,11 +103,17 @@ class ResumeService:
             else:
                 data_to_save = parsed_data
 
+            # Update both parsed_data and completion status
             self.supabase.table("resumes")\
-                .update({"parsed_data": data_to_save})\
+                .update({
+                    "parsed_data": data_to_save,
+                    "is_parse_completed": True  # Mark parse as completed
+                })\
                 .eq("id", resume_id)\
                 .eq("user_id", user_id)\
                 .execute()
+            
+            logger.info(f"Resume {resume_id} marked as parse completed")
             
         except Exception as e:
             logger.error(f"Save parsed data error: {e}", exc_info=True)

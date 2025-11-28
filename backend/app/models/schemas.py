@@ -13,13 +13,15 @@ class ResumeUploadResponse(BaseModel):
     resume_id: str
     file_name: str
     file_path: str
+    is_upload_completed: bool = True
+    is_parse_completed: bool = False
     message: str
 
 
 class ParsedResumeData(BaseModel):
     """Parsed resume data from AI"""
     name: Optional[str] = None
-    links: Optional[List[str]] = []
+    links: Optional[dict] = {}  # Changed to dict for key-value pairs like {"LinkedIn": "url", "GitHub": "url"}
     skills: List[str]
     experience_years: Optional[int]
     education: List[str]
@@ -31,32 +33,57 @@ class ResumeParseResponse(BaseModel):
     """Response after resume parsing"""
     resume_id: str
     parsed_data: ParsedResumeData
+    is_upload_completed: bool = True
+    is_parse_completed: bool = True
     message: str
 
 
 # Context models
 class ContextBuildRequest(BaseModel):
     """Request to build user context"""
+    purpose: str  # Jobs, Sponsorship, Freelancing, etc.
     target_roles: List[str]
     preferred_industries: List[str]
     pitch_tone: str = "professional"
     keywords: List[str] = []
     custom_message: Optional[str] = None
     geography: List[str] = []
+    resume_extracted_text: Optional[str] = None
+    resume_parsed_data: Optional[dict] = None
 
 
 class ContextResponse(BaseModel):
     """User context response"""
     id: str
     user_id: str
+    purpose: Optional[str] = None
     target_roles: List[str]
     preferred_industries: List[str]
     pitch_tone: str
     keywords: List[str]
     custom_message: Optional[str]
     geography: List[str]
+    resume_extracted_text: Optional[str] = None
+    resume_parsed_data: Optional[dict] = None
     created_at: datetime
     updated_at: datetime
+
+
+class ContextSuggestionsResponse(BaseModel):
+    """AI-generated context suggestions"""
+    suggested_roles: List[str] = []
+    suggested_industries: List[str] = []
+    suggested_keywords: List[str] = []
+    suggested_geography: List[str] = []
+
+
+class PredefinedTagsResponse(BaseModel):
+    """Predefined tags for context setup (no AI needed)"""
+    purposes: List[str]
+    roles: List[str]
+    industries: List[str]
+    keywords: List[str]
+    locations: List[str]
 
 
 # SMTP models

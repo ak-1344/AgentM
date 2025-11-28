@@ -8,6 +8,7 @@ from app.core.security import get_current_user_id
 from app.models.schemas import ResumeUploadResponse, ResumeParseResponse
 from app.services.resume_service import ResumeService
 from app.services.ai_service import AIService
+from app.services.context_service import ContextService
 import logging
 
 logger = logging.getLogger(__name__)
@@ -79,8 +80,10 @@ async def parse_resume(
         
         resume_service = ResumeService()
         ai_service = AIService()
+        context_service = ContextService()
         
         # Get resume text (preferred) or file content
+        resume_text = None
         try:
             resume_text = await resume_service.get_resume_text(resume_id, user_id)
             if resume_text:
@@ -98,9 +101,23 @@ async def parse_resume(
         # Update database
         await resume_service.save_parsed_data(resume_id, user_id, parsed_data)
         
+        # Also update context table with new resume data
+        try:
+            await context_service.update_resume_data(
+                user_id=user_id,
+                resume_extracted_text=resume_text,
+                resume_parsed_data=parsed_data.dict()
+            )
+            logger.info(f"Updated context table with new resume data for user {user_id}")
+        except Exception as e:
+            logger.warning(f"Failed to update context with resume data: {e}")
+            # Don't fail the whole request if context update fails
+        
         return ResumeParseResponse(
             resume_id=resume_id,
             parsed_data=parsed_data,
+            is_upload_completed=True,
+            is_parse_completed=True,
             message="Resume parsed successfully"
         )
         
