@@ -3,11 +3,17 @@ Main API router - combines all endpoint routers
 """
 
 from fastapi import APIRouter
-from app.api.v1.endpoints import resume, context, smtp, email, email_management, logs
+from app.api.v1.endpoints import resume, context, smtp, email, email_management, logs, auth
 
 api_router = APIRouter()
 
 # Include all endpoint routers
+api_router.include_router(
+    auth.router,
+    prefix="/auth",
+    tags=["Authentication & User Profile"]
+)
+
 api_router.include_router(
     resume.router,
     prefix="/resume",

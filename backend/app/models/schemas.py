@@ -219,3 +219,33 @@ class LogsResponse(BaseModel):
 class ErrorResponse(BaseModel):
     """Standard error response"""
     detail: str
+
+
+# Auth and user profile models
+class UserProfileResponse(BaseModel):
+    """User profile response"""
+    id: str
+    email: str
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    job_title: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+
+class UserProfileUpdateRequest(BaseModel):
+    """Request to update user profile"""
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+    company: Optional[str] = None
+    job_title: Optional[str] = None
+
+
+class UserStatsResponse(BaseModel):
+    """User statistics response"""
+    resumes_count: int = 0
+    contexts_count: int = 0
+    smtp_configured: bool = False
+    emails_sent: int = 0
+

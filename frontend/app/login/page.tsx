@@ -2,17 +2,28 @@
 
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useRouter } from 'next/navigation'
-import { Mail, LogIn } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Mail, LogIn, CheckCircle } from 'lucide-react'
 
 export default function LoginPage() {
   const { user, signInWithGoogle, signInWithEmail, loading } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
   
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showSignupSuccess, setShowSignupSuccess] = useState(false)
+
+  useEffect(() => {
+    // Check if coming from successful signup
+    if (searchParams.get('signup') === 'success') {
+      setShowSignupSuccess(true)
+      // Remove the query parameter
+      router.replace('/login')
+    }
+  }, [searchParams, router])
 
   useEffect(() => {
     // Only redirect if we have a confirmed user and auth is not loading
@@ -104,6 +115,18 @@ export default function LoginPage() {
 
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h2>
           <p className="text-gray-600 mb-8">Sign in to your account to continue</p>
+
+          {showSignupSuccess && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-start gap-3">
+              <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-green-800">Account created successfully!</p>
+                <p className="text-xs text-green-700 mt-1">
+                  Please check your email to verify your account, then sign in below.
+                </p>
+              </div>
+            </div>
+          )}
 
           {error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">

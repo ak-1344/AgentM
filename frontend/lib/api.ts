@@ -149,6 +149,23 @@ export const api = {
     return apiClient.get('/api/v1/logs', { params: { limit } })
   },
 
+  // Auth and user profile endpoints
+  getUserProfile: async () => {
+    return apiClient.get('/api/v1/auth/profile')
+  },
+
+  updateUserProfile: async (data: any) => {
+    return apiClient.put('/api/v1/auth/profile', data)
+  },
+
+  deleteUserProfile: async () => {
+    return apiClient.delete('/api/v1/auth/profile')
+  },
+
+  getUserStats: async () => {
+    return apiClient.get('/api/v1/auth/stats')
+  },
+
   // Health check
   healthCheck: async () => {
     return apiClient.get('/health')
