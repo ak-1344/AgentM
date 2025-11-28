@@ -3,7 +3,7 @@
 import DashboardLayout from '@/components/DashboardLayout'
 import ResumeUploader from '@/components/ResumeUploader'
 import { useState, useEffect } from 'react'
-import { FileText, CheckCircle, Loader2, AlertCircle, RefreshCw, Upload } from 'lucide-react'
+import { FileText, CheckCircle, Loader2, AlertCircle, RefreshCw, Upload, Download, Eye } from 'lucide-react'
 import { api } from '@/lib/api'
 
 export default function ResumePage() {
@@ -21,16 +21,10 @@ export default function ResumePage() {
   const checkExistingResume = async () => {
     try {
       setIsLoading(true)
-      const response = await api.getResumes()
-      if (response.data && response.data.length > 0) {
-        const resume = response.data[0]
-        setExistingResume(resume)
-        setResumeId(resume.id)
-
-        // If resume exists but not parsed, trigger parse automatically
-        if (!resume.parsed_data) {
-          handleParse(resume.id)
-        }
+      const response = await api.getCurrentResume()
+      if (response.data) {
+        setExistingResume(response.data)
+        setResumeId(response.data.id)
       } else {
         setShowUploader(true)
       }
@@ -49,14 +43,14 @@ export default function ResumePage() {
     try {
       await api.parseResume(id)
       // Refresh resume data
-      const response = await api.getResumes()
-      if (response.data && response.data.length > 0) {
-        setExistingResume(response.data[0])
+      const response = await api.getCurrentResume()
+      if (response.data) {
+        setExistingResume(response.data)
       }
       setIsParsing(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Parsing error:', error)
-      setParseError('AI parsing failed. Please try again.')
+      setParseError(error.response?.data?.detail || 'AI parsing failed. Please try again.')
       setIsParsing(false)
     }
   }
@@ -65,6 +59,40 @@ export default function ResumePage() {
     setResumeId(id)
     setShowUploader(false)
     await handleParse(id)
+  }
+
+  const handleDownload = async () => {
+    if (!existingResume) return
+    
+    try {
+      const response = await api.downloadResume(existingResume.id)
+      const blob = new Blob([response.data])
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = existingResume.file_name
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      window.URL.revokeObjectURL(url)
+    } catch (error) {
+      console.error('Download error:', error)
+      alert('Failed to download resume')
+    }
+  }
+
+  const handleView = async () => {
+    if (!existingResume) return
+    
+    try {
+      const response = await api.downloadResume(existingResume.id)
+      const blob = new Blob([response.data], { type: response.headers['content-type'] })
+      const url = window.URL.createObjectURL(blob)
+      window.open(url, '_blank')
+    } catch (error) {
+      console.error('View error:', error)
+      alert('Failed to open resume')
+    }
   }
 
   if (isLoading) {
@@ -114,6 +142,20 @@ export default function ResumePage() {
                 </div>
               </div>
               <div className="flex gap-2">
+                <button
+                  onClick={handleView}
+                  className="btn-secondary flex items-center gap-2"
+                >
+                  <Eye className="w-4 h-4" />
+                  View
+                </button>
+                <button
+                  onClick={handleDownload}
+                  className="btn-secondary flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Download
+                </button>
                 <button
                   onClick={() => handleParse(existingResume.id)}
                   disabled={isParsing}

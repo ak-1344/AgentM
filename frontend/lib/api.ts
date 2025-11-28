@@ -73,6 +73,12 @@ export const api = {
     return apiClient.get('/api/v1/resume')
   },
 
+  downloadResume: async (resumeId: string) => {
+    return apiClient.get(`/api/v1/resume/download/${resumeId}`, {
+      responseType: 'blob'
+    })
+  },
+
   // Context endpoints
   buildContext: async (data: any) => {
     return apiClient.post('/api/v1/context/build', data)
@@ -84,6 +90,14 @@ export const api = {
 
   getContextProfile: async () => {
     return apiClient.get('/api/v1/context')
+  },
+
+  getPredefinedTags: async () => {
+    return apiClient.get('/api/v1/context/predefined-tags')
+  },
+
+  getContextSuggestions: async () => {
+    return apiClient.get('/api/v1/context/suggestions')
   },
 
   getSmtpConfig: async () => {
