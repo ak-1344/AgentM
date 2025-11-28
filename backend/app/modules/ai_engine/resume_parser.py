@@ -5,7 +5,7 @@ Extracts skills, experience, education, and personal info from resumes
 
 from typing import Dict, Any, Optional
 import logging
-from langchain.chat_models import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
@@ -49,19 +49,19 @@ class ParsedResume(BaseModel):
 
 
 class ResumeParser:
-    """AI-powered resume parser using OpenAI GPT-4"""
+    """AI-powered resume parser using Google Gemini"""
     
-    def __init__(self, api_key: str, model: str = "gpt-4-turbo-preview", temperature: float = 0.3):
+    def __init__(self, google_api_key: str, model: str = "gemini-pro", temperature: float = 0.3):
         """
         Initialize resume parser
         
         Args:
-            api_key: OpenAI API key
+            google_api_key: Google API key
             model: Model name to use
             temperature: Temperature for generation (lower = more consistent)
         """
-        self.llm = ChatOpenAI(
-            api_key=api_key,
+        self.llm = ChatGoogleGenerativeAI(
+            google_api_key=google_api_key,
             model=model,
             temperature=temperature
         )

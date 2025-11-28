@@ -99,7 +99,7 @@ nano .env
 - `SUPABASE_URL` - Supabase project URL
 - `SUPABASE_KEY` - Supabase anon key
 - `SUPABASE_JWT_SECRET` - Supabase JWT secret
-- `OPENAI_API_KEY` - OpenAI API key
+- `GOOGLE_API_KEY` - Google Gemini API key
 
 **[📖 Complete Setup Guide](BACKEND_SETUP.md)**
 
@@ -159,7 +159,7 @@ Access at:
 - **FastAPI** - Modern web framework
 - **Pydantic** - Data validation
 - **Supabase** - PostgreSQL database + auth
-- **OpenAI** - GPT-4 for AI features
+- **Google Gemini** - Gemini Pro for AI features
 - **LangChain** - LLM orchestration
 - **aiosmtplib** - Async email sending
 - **Cryptography** - Password encryption
@@ -279,9 +279,9 @@ kill -9 <PID>
 - Check `SUPABASE_URL` and `SUPABASE_KEY` in `.env`
 - Ensure Supabase project is accessible
 
-**OpenAI Errors**
-- Verify `OPENAI_API_KEY` is valid
-- Check API credits at platform.openai.com
+**Gemini Errors**
+- Verify `GOOGLE_API_KEY` is valid
+- Check API quota
 
 **[📖 Complete Troubleshooting Guide](../docs/guides/TROUBLESHOOTING.md)**
 

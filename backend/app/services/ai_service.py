@@ -1,9 +1,9 @@
 """
 AI Service - handles all AI/LLM operations
-Uses OpenAI GPT-4 via LangChain
+Uses Google Gemini via LangChain
 """
 
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import PromptTemplate
 from langchain.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field
@@ -20,10 +20,15 @@ class AIService:
     """Service for AI operations"""
     
     def __init__(self):
-        self.llm = ChatOpenAI(
-            model=settings.OPENAI_MODEL,
-            temperature=settings.OPENAI_TEMPERATURE,
-            openai_api_key=settings.OPENAI_API_KEY
+        # Default LLM (fallback)
+        self.default_llm = self._get_llm(settings.GOOGLE_API_KEY)
+    
+    def _get_llm(self, api_key: str) -> ChatGoogleGenerativeAI:
+        """Helper to get LLM instance with specific key"""
+        return ChatGoogleGenerativeAI(
+            model=settings.GEMINI_MODEL,
+            temperature=settings.GEMINI_TEMPERATURE,
+            google_api_key=api_key
         )
     
     async def parse_resume(self, resume_text: str) -> ParsedResumeData:
@@ -33,6 +38,10 @@ class AIService:
         """
         try:
             logger.info("Parsing resume with AI...")
+            
+            # Use Parser Key if available, else fallback
+            api_key = settings.GOOGLE_API_KEY_PARSER or settings.GOOGLE_API_KEY
+            llm = self._get_llm(api_key)
             
             prompt = PromptTemplate(
                 template="""
@@ -61,7 +70,7 @@ class AIService:
                 input_variables=["resume_text"]
             )
             
-            chain = prompt | self.llm
+            chain = prompt | llm
             response = await chain.ainvoke({"resume_text": resume_text})
             
             # Parse JSON response
@@ -94,6 +103,10 @@ class AIService:
         try:
             logger.info("Refining context with AI...")
             
+            # Use Chatbot Key if available
+            api_key = settings.GOOGLE_API_KEY_CHATBOT or settings.GOOGLE_API_KEY
+            llm = self._get_llm(api_key)
+            
             prompt = f"""
             Analyze the following user context and provide refinements:
             
@@ -109,7 +122,7 @@ class AIService:
             Return as JSON with keys: suggested_roles, suggested_industries, suggested_keywords
             """
             
-            response = await self.llm.ainvoke(prompt)
+            response = await llm.ainvoke(prompt)
             
             # For now, just return original context
             # TODO: Implement full refinement logic
@@ -133,6 +146,10 @@ class AIService:
         try:
             logger.info(f"Generating email for {company_name}...")
             
+            # Use Generator Key if available
+            api_key = settings.GOOGLE_API_KEY_GENERATOR or settings.GOOGLE_API_KEY
+            llm = self._get_llm(api_key)
+            
             prompt = f"""
             Generate a personalized outreach email.
             
@@ -155,7 +172,7 @@ class AIService:
             Return as JSON: {{"subject": "...", "body": "..."}}
             """
             
-            response = await self.llm.ainvoke(prompt)
+            response = await llm.ainvoke(prompt)
             content = response.content
             
             # Parse JSON

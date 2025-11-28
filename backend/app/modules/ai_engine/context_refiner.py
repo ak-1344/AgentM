@@ -5,7 +5,7 @@ Helps users improve their targeting context with AI suggestions
 
 from typing import Dict, Any, List
 import logging
-from langchain.chat_models import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 
 logger = logging.getLogger(__name__)
@@ -14,15 +14,15 @@ logger = logging.getLogger(__name__)
 class ContextRefiner:
     """AI-powered context refinement for better targeting"""
     
-    def __init__(self, api_key: str, model: str = "gpt-4-turbo-preview"):
+    def __init__(self, google_api_key: str, model: str = "gemini-pro"):
         """
         Initialize context refiner
         
         Args:
-            api_key: OpenAI API key
+            google_api_key: Google API key
             model: Model to use
         """
-        self.llm = ChatOpenAI(api_key=api_key, model=model, temperature=0.7)
+        self.llm = ChatGoogleGenerativeAI(google_api_key=google_api_key, model=model, temperature=0.7)
     
     def suggest_improvements(self, context: Dict[str, Any]) -> Dict[str, Any]:
         """

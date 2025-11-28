@@ -5,7 +5,7 @@ Generates customized outreach emails based on context and company info
 
 from typing import Dict, Any, Optional
 import logging
-from langchain.chat_models import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 
 logger = logging.getLogger(__name__)
@@ -14,17 +14,17 @@ logger = logging.getLogger(__name__)
 class EmailGenerator:
     """AI-powered email generator for personalized outreach"""
     
-    def __init__(self, api_key: str, model: str = "gpt-4-turbo-preview", temperature: float = 0.7):
+    def __init__(self, google_api_key: str, model: str = "gemini-pro", temperature: float = 0.7):
         """
         Initialize email generator
         
         Args:
-            api_key: OpenAI API key
+            google_api_key: Google API key
             model: Model to use
             temperature: Temperature for generation (higher = more creative)
         """
-        self.llm = ChatOpenAI(
-            api_key=api_key,
+        self.llm = ChatGoogleGenerativeAI(
+            google_api_key=google_api_key,
             model=model,
             temperature=temperature
         )

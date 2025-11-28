@@ -76,7 +76,7 @@ class EmailManagementService:
                 "job_type": job_type,
                 "salary_range": salary_range,
                 "status": "new",
-                "ai_model": "gpt-4-turbo",
+                "ai_model": "gemini-pro",
                 "generation_metadata": {
                     "custom_prompt": custom_prompt,
                     "generated_at": datetime.utcnow().isoformat()
@@ -304,7 +304,7 @@ class EmailManagementService:
                 "user_id": user_id,
                 "role": role,
                 "message": message,
-                "ai_model": "gpt-4-turbo" if role == "assistant" else None
+                "ai_model": "gemini-pro" if role == "assistant" else None
             }
             
             result = self.supabase.table("email_chat_history")\

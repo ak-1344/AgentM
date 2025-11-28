@@ -4,7 +4,7 @@ Uses pydantic-settings for environment variable management
 """
 
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Optional
 import os
 
 
@@ -27,10 +27,13 @@ class Settings(BaseSettings):
     SUPABASE_JWT_SECRET: str
     DATABASE_URL: str
     
-    # AI & OpenAI
-    OPENAI_API_KEY: str
-    OPENAI_MODEL: str = "gpt-4-turbo-preview"
-    OPENAI_TEMPERATURE: float = 0.7
+    # AI & Gemini
+    GOOGLE_API_KEY: str
+    GOOGLE_API_KEY_PARSER: Optional[str] = None
+    GOOGLE_API_KEY_GENERATOR: Optional[str] = None
+    GOOGLE_API_KEY_CHATBOT: Optional[str] = None
+    GEMINI_MODEL: str = "gemini-pro"
+    GEMINI_TEMPERATURE: float = 0.7
     
     # CORS
     BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
@@ -41,7 +44,7 @@ class Settings(BaseSettings):
     SMTP_USE_TLS: bool = True
     
     class Config:
-        env_file = ".env"
+        env_file = [".env", ".env.local"]
         case_sensitive = True
 
 
