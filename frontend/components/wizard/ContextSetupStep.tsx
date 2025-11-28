@@ -18,6 +18,127 @@ interface PredefinedTags {
   locations: string[]
 }
 
+// Move TagInput outside to prevent re-creation on every render
+const TagInput = ({ 
+  label, 
+  field, 
+  placeholder,
+  suggestedTags,
+  formData,
+  inputValues,
+  setInputValues,
+  addItem,
+  removeItem,
+  addFromTag
+}: { 
+  label: string
+  field: 'targetRoles' | 'preferredIndustries' | 'keywords' | 'geography'
+  placeholder: string
+  suggestedTags?: string[]
+  formData: any
+  inputValues: any
+  setInputValues: (fn: (prev: any) => any) => void
+  addItem: (field: any, value: string) => void
+  removeItem: (field: any, index: number) => void
+  addFromTag: (field: any, value: string) => void
+}) => {
+  const inputKey = field === 'targetRoles' ? 'role' : 
+                   field === 'preferredIndustries' ? 'industry' :
+                   field === 'keywords' ? 'keyword' : 'location'
+  
+  return (
+    <div className="mb-6">
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        {label}
+      </label>
+      
+      {/* Selected tags */}
+      {formData[field].length > 0 && (
+        <div className="flex flex-wrap gap-2 mb-3">
+          {formData[field].map((item: string, index: number) => (
+            <span
+              key={index}
+              className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800"
+            >
+              {item}
+              <button
+                type="button"
+                onClick={() => removeItem(field, index)}
+                className="ml-2 hover:text-primary-600"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+      
+      {/* Input */}
+      <div className="flex gap-2 mb-3">
+        <input
+          type="text"
+          value={inputValues[inputKey]}
+          onChange={(e) => {
+            const newValue = e.target.value
+            setInputValues(prev => ({ ...prev, [inputKey]: newValue }))
+          }}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              const value = inputValues[inputKey]
+              addItem(field, value)
+              setInputValues(prev => ({ ...prev, [inputKey]: '' }))
+            }
+          }}
+          placeholder={placeholder}
+          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            const value = inputValues[inputKey]
+            addItem(field, value)
+            setInputValues(prev => ({ ...prev, [inputKey]: '' }))
+          }}
+          className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
+        >
+          <Plus className="w-4 h-4" />
+          Add
+        </button>
+      </div>
+      
+      {/* Predefined suggestions */}
+      {suggestedTags && suggestedTags.length > 0 && (
+        <div className="space-y-2">
+          <p className="text-xs text-gray-500 flex items-center gap-1">
+            <Target className="w-3 h-3" />
+            Common options (click to add):
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {suggestedTags.slice(0, 15).map((tag, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => addFromTag(field, tag)}
+                disabled={formData[field].includes(tag)}
+                className={`
+                  px-3 py-1 rounded-full text-sm transition-colors
+                  ${formData[field].includes(tag)
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700'
+                  }
+                `}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function ContextSetupStep({ parsedData, onComplete, onNext }: ContextSetupStepProps) {
   const [formData, setFormData] = useState({
     purpose: '',
@@ -114,114 +235,6 @@ export default function ContextSetupStep({ parsedData, onComplete, onNext }: Con
     }
   }
 
-  const TagInput = ({ 
-    label, 
-    field, 
-    placeholder,
-    suggestedTags 
-  }: { 
-    label: string
-    field: 'targetRoles' | 'preferredIndustries' | 'keywords' | 'geography'
-    placeholder: string
-    suggestedTags?: string[]
-  }) => {
-    const inputKey = field === 'targetRoles' ? 'role' : 
-                     field === 'preferredIndustries' ? 'industry' :
-                     field === 'keywords' ? 'keyword' : 'location'
-    
-    return (
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          {label}
-        </label>
-        
-        {/* Selected tags */}
-        {formData[field].length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-3">
-            {formData[field].map((item, index) => (
-              <span
-                key={index}
-                className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-primary-100 text-primary-800"
-              >
-                {item}
-                <button
-                  type="button"
-                  onClick={() => removeItem(field, index)}
-                  className="ml-2 hover:text-primary-600"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-        
-        {/* Input */}
-        <div className="flex gap-2 mb-3">
-          <input
-            type="text"
-            value={inputValues[inputKey]}
-            onChange={(e) => {
-              const newValue = e.target.value
-              setInputValues(prev => ({ ...prev, [inputKey]: newValue }))
-            }}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault()
-                const value = inputValues[inputKey]
-                addItem(field, value)
-                setInputValues(prev => ({ ...prev, [inputKey]: '' }))
-              }
-            }}
-            placeholder={placeholder}
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const value = inputValues[inputKey]
-              addItem(field, value)
-              setInputValues(prev => ({ ...prev, [inputKey]: '' }))
-            }}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 flex items-center gap-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add
-          </button>
-        </div>
-        
-        {/* Predefined suggestions */}
-        {suggestedTags && suggestedTags.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-xs text-gray-500 flex items-center gap-1">
-              <Target className="w-3 h-3" />
-              Common options (click to add):
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {suggestedTags.slice(0, 15).map((tag, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => addFromTag(field, tag)}
-                  disabled={formData[field].includes(tag)}
-                  className={`
-                    px-3 py-1 rounded-full text-sm transition-colors
-                    ${formData[field].includes(tag)
-                      ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-700 hover:bg-primary-100 hover:text-primary-700'
-                    }
-                  `}
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-    )
-  }
-
   return (
     <div className="p-6">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Set Up Your Context</h2>
@@ -264,6 +277,12 @@ export default function ContextSetupStep({ parsedData, onComplete, onNext }: Con
             field="targetRoles"
             placeholder="e.g., Software Engineer"
             suggestedTags={predefinedTags?.roles}
+            formData={formData}
+            inputValues={inputValues}
+            setInputValues={setInputValues}
+            addItem={addItem}
+            removeItem={removeItem}
+            addFromTag={addFromTag}
           />
 
           {/* Preferred Industries */}
@@ -272,6 +291,12 @@ export default function ContextSetupStep({ parsedData, onComplete, onNext }: Con
             field="preferredIndustries"
             placeholder="e.g., FinTech"
             suggestedTags={predefinedTags?.industries}
+            formData={formData}
+            inputValues={inputValues}
+            setInputValues={setInputValues}
+            addItem={addItem}
+            removeItem={removeItem}
+            addFromTag={addFromTag}
           />
 
           {/* Keywords */}
@@ -280,6 +305,12 @@ export default function ContextSetupStep({ parsedData, onComplete, onNext }: Con
             field="keywords"
             placeholder="e.g., Python, React"
             suggestedTags={predefinedTags?.keywords}
+            formData={formData}
+            inputValues={inputValues}
+            setInputValues={setInputValues}
+            addItem={addItem}
+            removeItem={removeItem}
+            addFromTag={addFromTag}
           />
 
           {/* Geography */}
@@ -288,6 +319,12 @@ export default function ContextSetupStep({ parsedData, onComplete, onNext }: Con
             field="geography"
             placeholder="e.g., Remote, San Francisco"
             suggestedTags={predefinedTags?.locations}
+            formData={formData}
+            inputValues={inputValues}
+            setInputValues={setInputValues}
+            addItem={addItem}
+            removeItem={removeItem}
+            addFromTag={addFromTag}
           />
 
           {/* Pitch Tone */}
