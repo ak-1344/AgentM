@@ -18,6 +18,8 @@ class ResumeUploadResponse(BaseModel):
 
 class ParsedResumeData(BaseModel):
     """Parsed resume data from AI"""
+    name: Optional[str] = None
+    links: Optional[List[str]] = []
     skills: List[str]
     experience_years: Optional[int]
     education: List[str]

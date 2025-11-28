@@ -27,18 +27,24 @@ class ResumeService:
             # Read file content
             content = await file.read()
             
-            # Generate unique file path
-            timestamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
-            file_path = f"{user_id}/{timestamp}_{file.filename}"
+            # Check if resume already exists for user
+            existing = self.supabase.table("resumes").select("id").eq("user_id", user_id).execute()
+            if existing.data:
+                logger.info(f"User {user_id} already has a resume. Uploading new version.")
             
-            # Upload to Supabase storage
+            # Generate file path with user-based name (one resume per user)
+            # Format: user_id/resume_{user_id}.{ext}
+            ext = file.filename.split('.')[-1] if '.' in file.filename else "pdf"
+            file_path = f"{user_id}/resume_{user_id}.{ext}"
+            
+            # Upload to Supabase storage (upsert=True to overwrite)
             storage_response = self.supabase.storage.from_("resumes").upload(
                 file_path,
                 content,
-                {"content-type": file.content_type}
+                {"content-type": file.content_type, "upsert": "true"}
             )
             
-            # Extract text from resume
+            # Extract text from resume (Restored)
             extracted_text = self._extract_text(content, file.content_type)
             
             # Create database record
@@ -46,7 +52,8 @@ class ResumeService:
                 "user_id": user_id,
                 "file_name": file.filename,
                 "file_path": file_path,
-                "extracted_text": extracted_text
+                "extracted_text": extracted_text,
+                "parsed_data": None # Explicitly null to indicate pending parse
             }
             
             db_response = self.supabase.table("resumes").insert(resume_data).execute()
@@ -56,7 +63,7 @@ class ResumeService:
                 "resume_id": resume_record["id"],
                 "file_name": file.filename,
                 "file_path": file_path,
-                "message": "Resume uploaded successfully"
+                "message": "Resume uploaded successfully. Parsing pending."
             }
             
         except Exception as e:
@@ -81,11 +88,19 @@ class ResumeService:
             logger.error(f"Get resume text error: {e}", exc_info=True)
             raise
     
-    async def save_parsed_data(self, resume_id: str, user_id: str, parsed_data: dict):
+    async def save_parsed_data(self, resume_id: str, user_id: str, parsed_data: any):
         """Save parsed resume data to database"""
         try:
+            # Convert Pydantic model to dict if needed
+            if hasattr(parsed_data, "model_dump"):
+                data_to_save = parsed_data.model_dump()
+            elif hasattr(parsed_data, "dict"):
+                data_to_save = parsed_data.dict()
+            else:
+                data_to_save = parsed_data
+
             self.supabase.table("resumes")\
-                .update({"parsed_data": parsed_data})\
+                .update({"parsed_data": data_to_save})\
                 .eq("id", resume_id)\
                 .eq("user_id", user_id)\
                 .execute()
@@ -94,6 +109,26 @@ class ResumeService:
             logger.error(f"Save parsed data error: {e}", exc_info=True)
             raise
     
+    async def get_current_resume(self, user_id: str) -> dict:
+        """Get current resume for user"""
+        try:
+            # Get latest resume for user
+            response = self.supabase.table("resumes")\
+                .select("*")\
+                .eq("user_id", user_id)\
+                .order("created_at", desc=True)\
+                .limit(1)\
+                .execute()
+            
+            if not response.data:
+                return None
+            
+            return response.data[0]
+            
+        except Exception as e:
+            logger.error(f"Get current resume error: {e}", exc_info=True)
+            raise
+
     async def get_resume(self, resume_id: str, user_id: str) -> dict:
         """Get resume details"""
         try:
@@ -110,6 +145,53 @@ class ResumeService:
             
         except Exception as e:
             logger.error(f"Get resume error: {e}", exc_info=True)
+            raise
+    
+    async def download_resume(self, resume_id: str, user_id: str) -> tuple[bytes, str, str]:
+        """Download resume file"""
+        try:
+            # Get file info from DB
+            resume = await self.get_resume(resume_id, user_id)
+            file_path = resume["file_path"]
+            original_name = resume["file_name"]
+            
+            # Download from Storage
+            response = self.supabase.storage.from_("resumes").download(file_path)
+            
+            # Determine mime type
+            mime_type = "application/pdf"
+            if file_path.endswith(".docx"):
+                mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            elif file_path.endswith(".doc"):
+                mime_type = "application/msword"
+                
+            return response, mime_type, original_name
+            
+        except Exception as e:
+            logger.error(f"Download resume error: {e}", exc_info=True)
+            raise
+
+    async def get_resume_file_content(self, resume_id: str, user_id: str) -> tuple[bytes, str]:
+        """Get resume file content and mime type from storage"""
+        try:
+            # Get file path from DB
+            resume = await self.get_resume(resume_id, user_id)
+            file_path = resume["file_path"]
+            
+            # Download from Storage
+            response = self.supabase.storage.from_("resumes").download(file_path)
+            
+            # Determine mime type (basic check based on extension)
+            mime_type = "application/pdf"
+            if file_path.endswith(".docx"):
+                mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            elif file_path.endswith(".doc"):
+                mime_type = "application/msword"
+                
+            return response, mime_type
+            
+        except Exception as e:
+            logger.error(f"Get resume file error: {e}", exc_info=True)
             raise
     
     def _extract_text(self, content: bytes, content_type: str) -> str:

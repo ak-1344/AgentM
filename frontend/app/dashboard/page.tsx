@@ -28,7 +28,7 @@ export default function DashboardPage() {
   const loadProgress = async () => {
     try {
       setProgress(prev => ({ ...prev, loading: true }))
-      
+
       // Check each component in parallel
       const [resumeRes, contextRes, smtpRes] = await Promise.allSettled([
         api.getResumes(),
@@ -36,8 +36,24 @@ export default function DashboardPage() {
         api.getSmtpConfig()
       ])
 
+      let hasResume = false
+      if (resumeRes.status === 'fulfilled' && resumeRes.value?.data?.length > 0) {
+        hasResume = true
+        // Check if latest resume is parsed
+        const latestResume = resumeRes.value.data[0]
+        if (!latestResume.parsed_data) {
+          console.log('Resume found but not parsed. Triggering parse...')
+          try {
+            await api.parseResume(latestResume.id)
+            console.log('Auto-parsing triggered successfully')
+          } catch (e) {
+            console.error('Auto-parsing failed:', e)
+          }
+        }
+      }
+
       setProgress({
-        hasResume: resumeRes.status === 'fulfilled' && resumeRes.value?.data?.length > 0,
+        hasResume: hasResume,
         hasContext: contextRes.status === 'fulfilled' && contextRes.value?.data !== null,
         hasSmtp: smtpRes.status === 'fulfilled' && smtpRes.value?.data !== null,
         loading: false
@@ -77,7 +93,7 @@ export default function DashboardPage() {
               </span>
             </div>
             <div className="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 className="bg-primary-600 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${progressPercentage}%` }}
               />

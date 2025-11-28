@@ -17,11 +17,11 @@ apiClient.interceptors.request.use(
     // Get Supabase session token
     const { supabase } = await import('./supabase')
     const { data: { session } } = await supabase.auth.getSession()
-    
+
     if (session?.access_token) {
       config.headers.Authorization = `Bearer ${session.access_token}`
     }
-    
+
     return config
   },
   (error) => {
@@ -49,7 +49,7 @@ export const api = {
   uploadResume: async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
-    
+
     try {
       const response = await apiClient.post('/api/v1/resume/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -59,6 +59,10 @@ export const api = {
       console.error('Resume upload error:', error.response?.data || error.message)
       throw error
     }
+  },
+
+  getCurrentResume: async () => {
+    return apiClient.get('/api/v1/resume/current')
   },
 
   parseResume: async (resumeId: string) => {

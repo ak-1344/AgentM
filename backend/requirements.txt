@@ -17,8 +17,7 @@ cryptography==41.0.7
 
 # AI & LLM
 google-generativeai==0.3.2
-langchain-google-genai==0.0.5
-langchain==0.0.350
+google-genai>=0.3.0
 tiktoken==0.5.2
 
 # Testing

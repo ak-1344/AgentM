@@ -32,7 +32,10 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY_PARSER: Optional[str] = None
     GOOGLE_API_KEY_GENERATOR: Optional[str] = None
     GOOGLE_API_KEY_CHATBOT: Optional[str] = None
-    GEMINI_MODEL: str = "gemini-pro"
+    GEMINI_MODEL: str = "gemini-2.0-flash-exp"
+    GEMINI_MODEL_PARSER: str = "gemini-2.0-flash-exp"
+    GEMINI_MODEL_GENERATOR: str = "gemini-2.0-flash-exp"
+    GEMINI_MODEL_CHATBOT: str = "gemini-2.0-flash-exp"
     GEMINI_TEMPERATURE: float = 0.7
     
     # CORS

@@ -3,6 +3,7 @@ Resume upload and parsing endpoints
 """
 
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
+from fastapi.responses import JSONResponse
 from app.core.security import get_current_user_id
 from app.models.schemas import ResumeUploadResponse, ResumeParseResponse
 from app.services.resume_service import ResumeService
@@ -11,6 +12,22 @@ import logging
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+
+@router.get("/current")
+async def get_current_resume(
+    user_id: str = Depends(get_current_user_id)
+):
+    """Get current user's resume"""
+    try:
+        resume_service = ResumeService()
+        resume = await resume_service.get_current_resume(user_id)
+        if not resume:
+            return JSONResponse(status_code=404, content={"detail": "No resume found"})
+        return resume
+    except Exception as e:
+        logger.error(f"Get current resume error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/upload", response_model=ResumeUploadResponse)
@@ -63,11 +80,20 @@ async def parse_resume(
         resume_service = ResumeService()
         ai_service = AIService()
         
-        # Get resume text
-        resume_text = await resume_service.get_resume_text(resume_id, user_id)
-        
-        # Parse with AI
-        parsed_data = await ai_service.parse_resume(resume_text)
+        # Get resume text (preferred) or file content
+        try:
+            resume_text = await resume_service.get_resume_text(resume_id, user_id)
+            if resume_text:
+                # Parse text directly
+                parsed_data = await ai_service.parse_resume_text(resume_text)
+            else:
+                # Fallback to file parsing if no text (e.g. image PDF)
+                file_content, mime_type = await resume_service.get_resume_file_content(resume_id, user_id)
+                parsed_data = await ai_service.parse_resume_file(file_content, mime_type)
+        except Exception:
+            # If text retrieval fails, try file parsing
+            file_content, mime_type = await resume_service.get_resume_file_content(resume_id, user_id)
+            parsed_data = await ai_service.parse_resume_file(file_content, mime_type)
         
         # Update database
         await resume_service.save_parsed_data(resume_id, user_id, parsed_data)
@@ -95,4 +121,25 @@ async def get_resume(
         return resume
     except Exception as e:
         logger.error(f"Get resume error: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{resume_id}/download")
+async def download_resume(
+    resume_id: str,
+    user_id: str = Depends(get_current_user_id)
+):
+    """Download resume file"""
+    try:
+        resume_service = ResumeService()
+        file_content, mime_type, filename = await resume_service.download_resume(resume_id, user_id)
+        
+        from fastapi.responses import Response
+        return Response(
+            content=file_content,
+            media_type=mime_type,
+            headers={"Content-Disposition": f"attachment; filename={filename}"}
+        )
+    except Exception as e:
+        logger.error(f"Download resume error: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))

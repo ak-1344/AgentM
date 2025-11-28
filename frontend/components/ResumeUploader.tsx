@@ -1,8 +1,8 @@
 'use client'
 
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Upload, File, X, CheckCircle, AlertCircle } from 'lucide-react'
+import { Upload, File as FileIcon, X, CheckCircle, AlertCircle } from 'lucide-react'
 import { api } from '@/lib/api'
 
 interface ResumeUploaderProps {
@@ -12,14 +12,48 @@ interface ResumeUploaderProps {
 export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps) {
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [parsing, setParsing] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [resumeId, setResumeId] = useState<string | null>(null)
+  const [parsed, setParsed] = useState(false)
+
+  // Check for existing resume on load
+  useEffect(() => {
+    const fetchCurrentResume = async () => {
+      try {
+        const response = await api.getCurrentResume()
+        if (response.data) {
+          setResumeId(response.data.id)
+          // Create a mock file object for display
+          const mockFile = new File([""], response.data.file_name || "Existing Resume", { type: "application/pdf" })
+          setFile(mockFile)
+          setSuccess(true)
+
+          // Check if already parsed
+          if (response.data.parsed_data) {
+            setParsed(true)
+            if (onUploadSuccess) {
+              onUploadSuccess(response.data.id)
+            }
+          }
+        }
+      } catch (err) {
+        // Ignore 404s (no resume)
+        console.log("No existing resume found")
+      }
+    }
+
+    fetchCurrentResume()
+  }, [onUploadSuccess])
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length > 0) {
       setFile(acceptedFiles[0])
       setError(null)
       setSuccess(false)
+      setResumeId(null)
+      setParsed(false)
     }
   }, [])
 
@@ -32,6 +66,7 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
     },
     maxFiles: 1,
     maxSize: 10 * 1024 * 1024, // 10MB
+    disabled: !!resumeId
   })
 
   const handleUpload = async () => {
@@ -42,15 +77,9 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
 
     try {
       const response = await api.uploadResume(file)
-      const resumeId = response.data.resume_id
-
-      // Parse the resume
-      await api.parseResume(resumeId)
-
+      const newResumeId = response.data.resume_id
+      setResumeId(newResumeId)
       setSuccess(true)
-      if (onUploadSuccess) {
-        onUploadSuccess(resumeId)
-      }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to upload resume')
     } finally {
@@ -58,10 +87,31 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
     }
   }
 
+  const handleParse = async () => {
+    if (!resumeId) return
+
+    setParsing(true)
+    setError(null)
+
+    try {
+      await api.parseResume(resumeId)
+      setParsed(true)
+      if (onUploadSuccess) {
+        onUploadSuccess(resumeId)
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to parse resume')
+    } finally {
+      setParsing(false)
+    }
+  }
+
   const handleRemove = () => {
     setFile(null)
     setError(null)
     setSuccess(false)
+    setResumeId(null)
+    setParsed(false)
   }
 
   return (
@@ -70,11 +120,10 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
       {!file && (
         <div
           {...getRootProps()}
-          className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${
-            isDragActive
-              ? 'border-primary-500 bg-primary-50'
-              : 'border-gray-300 hover:border-primary-400 hover:bg-gray-50'
-          }`}
+          className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors ${isDragActive
+            ? 'border-primary-500 bg-primary-50'
+            : 'border-gray-300 hover:border-primary-400 hover:bg-gray-50'
+            }`}
         >
           <input {...getInputProps()} />
           <Upload className="w-12 h-12 mx-auto mb-4 text-gray-400" />
@@ -95,7 +144,7 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
         <div className="border border-gray-300 rounded-lg p-6">
           <div className="flex items-start gap-4">
             <div className="flex-shrink-0">
-              <File className="w-10 h-10 text-primary-600" />
+              <FileIcon className="w-10 h-10 text-primary-600" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
@@ -105,7 +154,7 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
                 {(file.size / 1024 / 1024).toFixed(2)} MB
               </p>
             </div>
-            {!uploading && !success && (
+            {!uploading && !parsing && !parsed && (
               <button
                 onClick={handleRemove}
                 className="flex-shrink-0 text-gray-400 hover:text-gray-600"
@@ -113,14 +162,15 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
                 <X className="w-5 h-5" />
               </button>
             )}
-            {success && (
+            {parsed && (
               <CheckCircle className="w-6 h-6 text-green-600" />
             )}
           </div>
 
-          {/* Upload Button */}
-          {!success && (
-            <div className="mt-4 flex gap-3">
+          {/* Actions */}
+          <div className="mt-4 flex gap-3">
+            {/* Upload Button */}
+            {!resumeId && (
               <button
                 onClick={handleUpload}
                 disabled={uploading}
@@ -132,31 +182,51 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
                     <span>Uploading...</span>
                   </div>
                 ) : (
-                  'Upload & Parse'
+                  'Upload Resume'
                 )}
               </button>
-              {!uploading && (
-                <button
-                  onClick={handleRemove}
-                  className="btn-secondary"
-                >
-                  Cancel
-                </button>
-              )}
-            </div>
-          )}
+            )}
+
+            {/* Parse Button */}
+            {resumeId && !parsed && (
+              <button
+                onClick={handleParse}
+                disabled={parsing}
+                className="btn-primary"
+              >
+                {parsing ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <span>Parsing with AI...</span>
+                  </div>
+                ) : (
+                  'Parse Resume'
+                )}
+              </button>
+            )}
+
+            {/* Cancel Button */}
+            {!uploading && !parsing && !parsed && (
+              <button
+                onClick={handleRemove}
+                className="btn-secondary"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
 
           {/* Success Message */}
-          {success && (
+          {parsed && (
             <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-start gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-medium text-green-900">
-                    Resume uploaded successfully!
+                    Resume processed successfully!
                   </p>
                   <p className="text-sm text-green-700 mt-1">
-                    Your resume has been parsed and analyzed by AI.
+                    Your resume has been uploaded and parsed.
                   </p>
                 </div>
               </div>
@@ -170,7 +240,7 @@ export default function ResumeUploader({ onUploadSuccess }: ResumeUploaderProps)
                 <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-medium text-red-900">
-                    Upload failed
+                    Operation failed
                   </p>
                   <p className="text-sm text-red-700 mt-1">
                     {error}
