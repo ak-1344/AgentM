@@ -1,0 +1,75 @@
+.
+├── backend
+│   ├── app
+│   ├── BACKEND_SETUP.md
+│   ├── Dockerfile
+│   ├── fly.toml
+│   ├── list_gemini_models.py
+│   ├── list_models.py
+│   ├── main.py
+│   ├── README.md
+│   ├── requirements.txt
+│   ├── test_parse_endpoint.py
+│   ├── tests
+│   └── verify_resume.py
+├── CHANGELOG.md
+├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
+├── database
+│   ├── add_completion_tracking.sql
+│   ├── add_context_purpose.sql
+│   ├── add_resume_to_context.sql
+│   ├── fix_user_trigger.sql
+│   ├── README.md
+│   ├── rollback_phase1.sql
+│   ├── schema_email_management.sql
+│   ├── schema_phase1.sql
+│   ├── SUPABASE_SETUP.sql
+│   └── SUPABASE_STORAGE_SETUP.sql
+├── deployment
+│   ├── Caddyfile
+│   ├── docker-compose.prod.yml
+│   ├── docker-compose.yml
+│   └── render.yaml
+├── docs
+│   ├── api
+│   ├── architecture
+│   ├── deployment
+│   ├── DOCUMENTATION_UPDATE.md
+│   ├── GETTING_STARTED.md
+│   ├── guides
+│   ├── index.md
+│   ├── PROJECT_OVERVIEW.md
+│   ├── QUICK_REFERENCE.md
+│   ├── README.md
+│   ├── reference
+│   ├── releases
+│   ├── setup
+│   ├── USER_GUIDE.md
+│   └── v1.0.0-UPDATE-SUMMARY.md
+├── frontend
+│   ├── app
+│   ├── components
+│   ├── contexts
+│   ├── Dockerfile
+│   ├── lib
+│   ├── middleware.ts
+│   ├── next.config.js
+│   ├── next-env.d.ts
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── pnpm-lock.yaml
+│   ├── postcss.config.js
+│   ├── README.md
+│   ├── tailwind.config.js
+│   ├── __tests__
+│   ├── tsconfig.json
+│   └── types
+├── LICENSE
+├── README.md
+├── SECURITY.md
+├── SETUP_SUMMARY.txt
+├── STRUCTURE.txt
+└── VERSION
+
+21 directories, 52 files

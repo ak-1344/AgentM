@@ -119,3 +119,37 @@ Once setup is complete, the user proceeds to the **Email Management** page.
 1.  **User Data** (Resume/Context) + **Target Data** (Company Info) -> **LLM** -> **Draft Email**
 2.  **Draft Email** + **User Feedback** (Chat) -> **LLM** -> **Refined Email**
 3.  **Refined Email** + **SMTP Credentials** -> **Mail Server** -> **Recipient**
+
+
+
+
+
+
+
+| Achieved Workflow |
+User visits website -> 
+Login/SignUp (Supabase Auth) -> 
+Uploads resume (Supabase Bucket with resume table) -> 
+Parse it (Sent to Gemini Api to fetch the text) -> 
+Parsed Json (extracted text again sent to API to get a json formatted data) -> 
+Fetch context data from user Input ->
+Show the basic details collected (context stored in context table) ->
+
+| Working Tasks |
+Internet website crawler (acc to context) [BigTask] ->
+
+
+
+
+| Future Tasks | 
+Store the details of company and their relatable data in ai_emails table ->
+Sent context of user as well as the company details to get back a personalised applying email ->
+Store those details in ai_emails table and show them on frontend in card view ->
+Apply editing options, review options and Ai updation/review features in each mail_page ->
+Check the smtp mail sending feature ->
+Check the complete workflow for a new user.
+
+
+| Later on Ideas |
+- Keep a datasheet for related companies info (A crawler must not need to visit each company again and again)
+- Company info can become a table and have tags realted to job opportunities or fields

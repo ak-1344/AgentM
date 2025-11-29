@@ -3,7 +3,20 @@
 Welcome to the Agent M documentation! This comprehensive guide will help you understand, set up, deploy, and use the AI-powered automated outreach platform.
 
 **Version:** 1.0.0 (Production Ready)  
-**Last Updated:** January 2025
+**Last Updated:** November 29, 2025  
+**Phase:** Phase 1 Complete ✅
+
+---
+
+## 🎯 Quick Links
+
+- **[📚 Getting Started](GETTING_STARTED.md)** - Start here if you're new ⭐
+- **[📖 User Guide](USER_GUIDE.md)** - Complete workflow walkthrough ⭐
+- **[⚡ Quick Reference](QUICK_REFERENCE.md)** - One-page cheat sheet ⭐
+- **[📊 Project Tracking](reference/PROJECT_TRACKING.md)** - Current status & progress
+- **[🚀 Quick Start](setup/QUICKSTART.md)** - Get running in 10 minutes
+- **[📈 API Reference](api/ENDPOINTS.md)** - Complete API documentation
+- **[📋 Changelog](../CHANGELOG.md)** - Version history & updates
 
 ---
 
@@ -38,8 +51,9 @@ docs/
 │   └── SECURITY.md             # Security architecture
 │
 ├── 📖 api/                      # API Documentation
-│   ├── README.md               # Complete API reference ⭐
-│   ├── endpoints.md            # All endpoints with examples
+│   ├── ENDPOINTS.md            # Complete API reference ⭐ NEW
+│   ├── README.md               # API overview
+│   ├── endpoints.md            # Legacy endpoint docs
 │   └── authentication.md       # Auth flows
 │
 ├── 📘 guides/                   # User & Developer Guides
@@ -67,6 +81,14 @@ docs/
 │   └── LOGGING.md              # Logging best practices
 │
 └── 📊 reference/                # Reference Documentation
+    ├── PROJECT_TRACKING.md     # Project tracking & metrics ⭐ NEW
+    ├── CHANGELOG.md            # Version history ⭐
+    ├── PROJECT_STATUS.md       # Current project status
+    ├── PROJECT_COMPLETE.md     # Completion report
+    ├── Work-domains.txt        # Phase breakdown
+    ├── WHATS_NEW.md           # Latest features
+    ├── database.md            # Database reference
+    └── VERSION.md             # Version information
     ├── CHANGELOG.md            # Complete version history ⭐
     ├── PROJECT_COMPLETE.md     # Project completion status
     ├── COMPLETION_REPORT.md    # Final report
