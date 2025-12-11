@@ -28,7 +28,7 @@ export default function SignUpPage() {
 
   useEffect(() => {
     if (user && !loading) {
-      window.location.href = '/dashboard'
+      window.location.href = '/home'
     }
   }, [user, loading])
 

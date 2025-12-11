@@ -22,6 +22,24 @@ export interface EmailData {
   sent_at?: string
   created_at: string
   updated_at: string
+  personalization_score?: number
+  ai_reasoning?: string
+  company_insights?: {
+    name: string
+    industry?: string
+    location?: string
+    size?: string
+    revenue?: string
+    founded?: string
+    website?: string
+    description?: string
+    recentNews?: string[]
+    keyPeople?: Array<{
+      name: string
+      role: string
+    }>
+    relevanceScore?: number
+  }
   metadata?: {
     company_size?: string
     industry?: string

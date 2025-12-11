@@ -144,6 +144,10 @@ export const api = {
     return apiClient.delete(`/api/v1/emails/${emailId}`)
   },
 
+  regenerateEmail: async (emailId: string, instructions?: string) => {
+    return apiClient.post(`/api/v1/emails/${emailId}/regenerate`, { instructions })
+  },
+
   // Logs endpoint (NEW)
   getLogs: async (limit: number = 100) => {
     return apiClient.get('/api/v1/logs', { params: { limit } })
@@ -164,6 +168,25 @@ export const api = {
 
   getUserStats: async () => {
     return apiClient.get('/api/v1/auth/stats')
+  },
+
+  // Activity feed endpoint
+  getActivityFeed: async (limit: number = 20) => {
+    return apiClient.get('/api/v1/activity/feed', { params: { limit } })
+  },
+
+  // Outreach scan endpoint
+  startOutreachScan: async () => {
+    return apiClient.post('/api/v1/scan/start')
+  },
+
+  // Company CSV upload endpoint
+  uploadCompanyCSV: async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return apiClient.post('/api/v1/companies/upload-csv', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
   },
 
   // Health check
