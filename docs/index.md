@@ -16,7 +16,7 @@ Welcome to the Agent M documentation! This comprehensive guide will help you und
 - **[📊 Project Tracking](reference/PROJECT_TRACKING.md)** - Current status & progress
 - **[🚀 Quick Start](setup/QUICKSTART.md)** - Get running in 10 minutes
 - **[📈 API Reference](api/ENDPOINTS.md)** - Complete API documentation
-- **[📋 Changelog](../CHANGELOG.md)** - Version history & updates
+- **[📋 Changelog](CHANGELOG.md)** - Version history & updates
 
 ---
 
@@ -68,34 +68,25 @@ docs/
 │   └── development.md          # Development workflow
 │
 ├── 🚢 deployment/               # Deployment Guides
-│   ├── PRODUCTION.md           # Production deployment ⭐
-│   ├── DEPLOY.md               # Quick deployment guide
-│   ├── Deployment_plan.md      # Choose deployment strategy
+│   ├── DEPLOY.md               # Quick deployment guide ⭐
+│   ├── DEPLOYMENT_PLAN.md      # Choose deployment strategy
+│   ├── DEPLOYMENT_CHECKLIST.md # Deployment verification
 │   ├── vercel-deployment.md    # Cloud: Vercel + Render
 │   ├── oracle-vm-deployment.md # Self-hosted VM
 │   └── docker-deployment.md    # Docker Compose
 │
-├── 🔧 operations/               # Operations & Maintenance
-│   ├── MONITORING.md           # System monitoring
-│   ├── BACKUP.md               # Backup & recovery
-│   └── LOGGING.md              # Logging best practices
-│
 └── 📊 reference/                # Reference Documentation
-    ├── PROJECT_TRACKING.md     # Project tracking & metrics ⭐ NEW
-    ├── CHANGELOG.md            # Version history ⭐
+    ├── PROJECT_TRACKING.md     # Project tracking & metrics ⭐
     ├── PROJECT_STATUS.md       # Current project status
-    ├── PROJECT_COMPLETE.md     # Completion report
-    ├── Work-domains.txt        # Phase breakdown
-    ├── WHATS_NEW.md           # Latest features
-    ├── database.md            # Database reference
-    └── VERSION.md             # Version information
-    ├── CHANGELOG.md            # Complete version history ⭐
-    ├── PROJECT_COMPLETE.md     # Project completion status
-    ├── COMPLETION_REPORT.md    # Final report
-    ├── PROJECT_STATUS.md       # Current metrics
-    ├── WHATS_NEW.md            # Latest additions
+    ├── FIXES_SUMMARY.md        # Bug fixes & improvements
+    ├── WHATS_NEW.md            # Latest features
+    ├── 4_STEP_WIZARD_IMPLEMENTATION.md # Setup wizard details
+    ├── FRONTEND_CLEANUP_SUMMARY.md # Frontend refactoring
     ├── database.md             # Database reference
-    └── config_history.md       # Configuration tracking
+    ├── config_history.md       # Configuration tracking
+    ├── VERSION.md              # Version information
+    ├── AgentM.txt              # Project notes
+    └── Work-domains.txt        # Phase breakdown
 ```
 
 ---
@@ -118,19 +109,18 @@ docs/
 7. 🐛 [**Troubleshooting**](guides/TROUBLESHOOTING.md) - Common issues
 
 ### 🚀 DevOps - Deployment & Operations
-1. 🚢 [**Production Deployment**](deployment/PRODUCTION.md) - Deploy to production
-2. 📋 [**Deployment Plan**](deployment/Deployment_plan.md) - Choose your strategy
-3. ☁️ [**Cloud Deployment**](deployment/vercel-deployment.md) - Vercel + Render
-4. 🖥️ [**Self-Hosted**](deployment/oracle-vm-deployment.md) - VM deployment
-5. 📊 [**Monitoring**](operations/MONITORING.md) - System health
-6. 💾 [**Backup & Recovery**](operations/BACKUP.md) - Data protection
+1. 🚢 [**Deployment Guide**](deployment/DEPLOY.md) - Quick deployment
+2. 📋 [**Deployment Plan**](deployment/DEPLOYMENT_PLAN.md) - Choose your strategy
+3. ✅ [**Deployment Checklist**](deployment/DEPLOYMENT_CHECKLIST.md) - Verification steps
+4. ☁️ [**Cloud Deployment**](deployment/vercel-deployment.md) - Vercel + Render
+5. 🖥️ [**Self-Hosted**](deployment/oracle-vm-deployment.md) - VM deployment
+6. 🐳 [**Docker Deployment**](deployment/docker-deployment.md) - Containerized setup
 
 ### 📱 End Users - Using Agent M
-1. 📧 [**Email Management**](guides/EMAIL_MANAGEMENT.md) - Generate & manage emails
-2. 🤖 [**AI Chatbot**](guides/AI_CHATBOT.md) - Review emails with AI
-3. 📄 [**Resume Setup**](guides/RESUME.md) - Upload your resume
-4. 🎯 [**Context Profiles**](guides/CONTEXT.md) - Configure your profile
-5. 📮 [**SMTP Configuration**](guides/SMTP.md) - Set up email sending
+1. 📚 [**User Guide**](USER_GUIDE.md) - Complete workflow walkthrough
+2. ⚡ [**Quick Reference**](QUICK_REFERENCE.md) - One-page cheat sheet
+3. 🧪 [**Wizard Testing Guide**](guides/WIZARD_TESTING_GUIDE.md) - Setup wizard guide
+4. 🐛 [**Troubleshooting**](guides/TROUBLESHOOTING.md) - Common issues & fixes
 
 ---
 
@@ -157,56 +147,41 @@ docs/
 ### 🏗️ Architecture & Design
 
 - [**System Overview**](architecture/OVERVIEW.md) ⭐ - Complete architecture
-- [**Database Schema**](architecture/DATABASE.md) - Tables, relationships, RLS
-- [**Backend Services**](architecture/BACKEND.md) - Service layer design
-- [**Frontend Components**](architecture/FRONTEND.md) - React structure
-- [**Security Architecture**](architecture/SECURITY.md) - Auth, encryption, RLS
+- [**Frontend Architecture**](architecture/FRONTEND.md) - Frontend structure & components
 
 ---
 
 ### 📖 API Documentation
 
-- [**Complete API Reference**](api/README.md) ⭐ - All 20 endpoints
-- [**Authentication**](api/authentication.md) - JWT auth flows
-- [**Endpoints Reference**](api/endpoints.md) - Request/response examples
-- [**Error Handling**](api/README.md#error-responses) - Error codes & messages
-
-**Key Endpoint Groups:**
-- Resume: Upload, parse, retrieve
-- Context: Create, update, get profiles
-- SMTP: Save, test configuration
-- Email: Send emails
-- **Email Management** (NEW): Generate, list, update, delete emails
-- **AI Chatbot** (NEW): Review, message, quick actions
-- **Activity Logs** (NEW): Create, list, filter, export logs
+- [**API Endpoints**](api/ENDPOINTS.md) ⭐ - Complete API reference
+- [**API Overview**](api/README.md) - Getting started with API
+- [**API Usage Guide**](guides/api-guide.md) - Detailed usage examples
 
 ---
 
 ### 📘 User & Developer Guides
 
 #### User Guides
-- [**Email Management**](guides/EMAIL_MANAGEMENT.md) - Using the email system
-- [**AI Chatbot**](guides/AI_CHATBOT.md) - Review & edit with AI
-- [**Resume Setup**](guides/RESUME.md) - Upload and parse resume
-- [**Context Profiles**](guides/CONTEXT.md) - Configure your profile
-- [**SMTP Configuration**](guides/SMTP.md) - Set up email sending
+- [**User Guide**](USER_GUIDE.md) ⭐ - Complete workflow walkthrough
+- [**Quick Reference**](QUICK_REFERENCE.md) ⭐ - One-page cheat sheet
+- [**Getting Started**](GETTING_STARTED.md) - New user introduction
+- [**Wizard Testing Guide**](guides/WIZARD_TESTING_GUIDE.md) - Setup wizard walkthrough
 
 #### Developer Guides
 - [**Troubleshooting**](guides/TROUBLESHOOTING.md) ⭐ - Common issues & solutions
-- [**Contributing Guide**](guides/CONTRIBUTING.md) - Development guidelines
+- [**Development Workflow**](guides/development.md) - Local development guide
 - [**API Usage Guide**](guides/api-guide.md) - Using the API
-- [**Development Workflow**](guides/development.md) - Git workflow
 
 ---
 
 ### 🚢 Deployment
 
-#### Quick Deployment
-- [**Deployment Guide**](deployment/DEPLOY.md) - Quick start (5-30 min)
-- [**Deployment Plan**](deployment/Deployment_plan.md) - Choose your path
-
-#### Deployment Strategies
-- [**Production Deployment**](deployment/PRODUCTION.md) ⭐ - Best practices
+- [**Deployment Guide**](deployment/DEPLOY.md) ⭐ - Quick deployment guide
+- [**Deployment Plan**](deployment/DEPLOYMENT_PLAN.md) - Choose your strategy
+- [**Deployment Checklist**](deployment/DEPLOYMENT_CHECKLIST.md) - Verification steps
+- [**Vercel Deployment**](deployment/vercel-deployment.md) - Cloud deployment (Vercel + Render)
+- [**Oracle VM Deployment**](deployment/oracle-vm-deployment.md) - Self-hosted VM setup
+- [**Docker Deployment**](deployment/docker-deployment.md) - Docker Compose setup
 - **Track A - Cloud** (15 min):
   - [**Vercel + Render**](deployment/vercel-deployment.md) - Managed services
 - **Track B - Self-Hosted** (1-2 hours):
@@ -227,12 +202,13 @@ docs/
 
 ### 📊 Reference & History
 
-- [**CHANGELOG**](reference/CHANGELOG.md) ⭐ - Complete version history
+- [**CHANGELOG**](CHANGELOG.md) ⭐ - Complete version history
 - [**v1.0.0 Release Notes**](releases/v1.0.0.md) ⭐ - Latest release
-- [**Project Status**](reference/PROJECT_STATUS.md) - Current metrics
-- [**Project Complete**](reference/PROJECT_COMPLETE.md) - Completion report
+- [**Project Status**](reference/PROJECT_STATUS.md) - Current metrics & tracking
+- [**Project Tracking**](reference/PROJECT_TRACKING.md) - Development progress
 - [**What's New**](reference/WHATS_NEW.md) - Latest features
 - [**Database Reference**](reference/database.md) - Schema details
+- [**Fixes Summary**](reference/FIXES_SUMMARY.md) - Bug fixes & improvements
 
 ---
 
@@ -251,7 +227,7 @@ docs/
 - 🔧 Backend setup guide with venv instructions
 - ⚙️ Environment variables reference
 - 🐛 Troubleshooting guide with solutions
-- 🚀 Production deployment guide
+- 🚀 Deployment guides for multiple platforms
 
 **[📖 View Full Release Notes](releases/v1.0.0.md)**
 
@@ -260,19 +236,17 @@ docs/
 ## 🔍 Search by Feature
 
 ### Email Features
-- [Email Management Guide](guides/EMAIL_MANAGEMENT.md)
-- [Email API Endpoints](api/README.md#email-management-endpoints)
-- [SMTP Setup](setup/smtp_setup.md)
+- [Email API Endpoints](api/ENDPOINTS.md) - Complete email endpoint reference
+- [SMTP Setup](setup/smtp_setup.md) - Configure email sending
 
 ### AI Features
-- [AI Chatbot Guide](guides/AI_CHATBOT.md)
-- [Chatbot API](api/README.md#ai-chatbot-endpoints)
-- [Resume AI Parsing](guides/RESUME.md)
+- [API Overview](api/README.md) - All API endpoints including AI features
+- [User Guide](USER_GUIDE.md) - Complete workflow with AI features
 
-### Database
-- [Database Setup](setup/DATABASE.md)
-- [Schema Documentation](architecture/DATABASE.md)
-- [Supabase Guide](setup/SUPABASE_GUIDE.md)
+### Database & Setup
+- [Supabase Guide](setup/SUPABASE_GUIDE.md) - Database setup
+- [Supabase Quickstart](setup/SUPABASE_QUICKSTART.md) - Quick database setup
+- [Database Reference](reference/database.md) - Schema details
 
 ### Authentication
 - [Auth Guide](setup/AUTHENTICATION_GUIDE.md)
@@ -291,23 +265,16 @@ docs/
 ### Community
 - 🐛 [**GitHub Issues**](https://github.com/ak-1344/AgentM/issues) - Report bugs
 - 💬 [**Discussions**](https://github.com/ak-1344/AgentM/discussions) - Ask questions
-- 📧 [**Email Support**](mailto:support@agentm.dev) - Coming soon
-
-### Resources
-- 🎥 [**Video Tutorials**](https://youtube.com/@agentm) - Coming soon
-- 📝 [**Blog**](https://blog.agentm.dev) - Coming soon
-- 🐦 [**Twitter**](https://twitter.com/agentm_dev) - Coming soon
 
 ---
 
-## 📝 Contributing to Documentation
+## 📝 Contributing
 
-Found an error or want to improve the docs?
+Want to contribute to Agent M?
 
-1. Check [**Contributing Guide**](guides/CONTRIBUTING.md)
-2. Edit the markdown file
-3. Submit a pull request
-4. We'll review and merge!
+1. Read the [**Contributing Guide**](../CONTRIBUTING.md)
+2. Check the [**Code of Conduct**](../CODE_OF_CONDUCT.md)
+3. Submit issues or pull requests on GitHub
 
 ---
 
@@ -320,10 +287,10 @@ Must-read files marked with ⭐:
 - [**Backend Setup**](setup/BACKEND.md) - Backend configuration
 - [**Environment Variables**](setup/ENVIRONMENT.md) - Config reference
 - [**System Architecture**](architecture/OVERVIEW.md) - How it works
-- [**API Documentation**](api/README.md) - All endpoints
+- [**API Documentation**](api/ENDPOINTS.md) - All endpoints
 - [**Troubleshooting**](guides/TROUBLESHOOTING.md) - Common issues
-- [**CHANGELOG**](reference/CHANGELOG.md) - Version history
-- [**Production Deployment**](deployment/PRODUCTION.md) - Deploy guide
+- [**CHANGELOG**](CHANGELOG.md) - Version history
+- [**Deployment Guide**](deployment/DEPLOY.md) - Deploy guide
 
 ---
 
@@ -332,46 +299,37 @@ Must-read files marked with ⭐:
 [← Back to Main README](../README.md) | [Quick Start Guide →](setup/QUICKSTART.md)
 
 ### Setup & Configuration
+- [Backend Setup](setup/BACKEND.md) - Backend environment setup ⭐
+- [Environment Variables](setup/ENVIRONMENT.md) - All configuration options ⭐
 - [SMTP Setup](setup/smtp_setup.md) - Configure email sending
-- [Supabase Setup](setup/supabase_config.md) - Set up database
+- [Supabase Setup](setup/SUPABASE_GUIDE.md) - Set up database
 - [Google OAuth](setup/oauth_google_setup.md) - Add Google login
-- [API Keys](setup/crawler_api_keys.md) - For Phase 2 web scraping
+- [Authentication Guide](setup/AUTHENTICATION_GUIDE.md) - Auth configuration
 
 ### Deployment Options
 
-#### Track A: Production (Vercel + Render)
-**Recommended for quick deployment**
-- [Deployment Plan Overview](deployment/Deployment_plan.md)
-- [Vercel Deployment Guide](deployment/vercel-deployment.md)
+#### Cloud Deployment (Recommended)
+- [Deployment Guide](deployment/DEPLOY.md) - Quick deployment ⭐
+- [Deployment Plan](deployment/DEPLOYMENT_PLAN.md) - Strategy overview
+- [Vercel Deployment](deployment/vercel-deployment.md) - Vercel + Render
 - **Stack**: Vercel (Frontend) + Render/Railway (Backend) + Supabase
 - **Cost**: Free tier available
 - **Time**: 15-20 minutes
 
-#### Track B: Self-Hosted (Oracle VM)
-**For learning & full control**
-- [Deployment Plan Overview](deployment/Deployment_plan.md)
-- [Oracle VM Deployment Guide](deployment/oracle-vm-deployment.md)
-- **Stack**: Oracle VM + Docker + Caddy + PostgreSQL
-- **Cost**: Free (Oracle Free Tier)
+#### Self-Hosted Deployment
+- [Oracle VM Deployment](deployment/oracle-vm-deployment.md) - VM setup
+- [Docker Deployment](deployment/docker-deployment.md) - Container setup
+- **Stack**: VM + Docker + Caddy + PostgreSQL
 - **Time**: 1-2 hours
 
-#### Local Development
-- [Docker Compose Deployment](deployment/docker-deployment.md)
-- **Stack**: Docker Compose (all services)
-- **Time**: 5 minutes
-
-### Development
-- [Contributing Guide](guides/CONTRIBUTING.md) - Development guidelines
+### Development & Reference
+- [Development Guide](guides/development.md) - Local development workflow
 - [API Guide](guides/api-guide.md) - Using the API
-- [Development Workflow](guides/development.md) - Git workflow, testing
-
-### Reference
-- [Project Summary](reference/PROJECT_SUMMARY.md) - Complete overview
-- [Status Report](reference/STATUS_REPORT.md) - Current metrics & status
+- [Wizard Testing](guides/WIZARD_TESTING_GUIDE.md) - Setup wizard guide
+- [Project Tracking](reference/PROJECT_TRACKING.md) - Development progress
+- [Project Status](reference/PROJECT_STATUS.md) - Current metrics
 - [Version Info](reference/VERSION.md) - Current version
-- [Changelog](reference/CHANGELOG.md) - All changes
 - [Database Schema](reference/database.md) - Database reference
-- [Config History](reference/config_history.md) - Environment variables
 
 ---
 

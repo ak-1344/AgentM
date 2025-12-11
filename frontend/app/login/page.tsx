@@ -4,12 +4,13 @@ import { useState, useEffect, Suspense } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Mail, LogIn, CheckCircle } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 
 function LoginContent() {
   const { user, signInWithGoogle, signInWithEmail, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -28,11 +29,36 @@ function LoginContent() {
   useEffect(() => {
     // Only redirect if we have a confirmed user and auth is not loading
     if (!loading && user) {
-      console.log('User authenticated, redirecting to dashboard', { user: user.email })
-      // Force full page reload to trigger middleware validation
-      window.location.href = '/dashboard'
+      checkSetupAndRedirect()
     }
   }, [user, loading])
+
+  const checkSetupAndRedirect = async () => {
+    try {
+      // Check if user has completed setup
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/profile`, {
+        headers: {
+          'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        }
+      })
+
+      if (response.ok) {
+        const profile = await response.json()
+        if (profile.setup_complete) {
+          window.location.href = '/home'
+        } else {
+          window.location.href = '/setup'
+        }
+      } else {
+        // If profile doesn't exist, go to setup
+        window.location.href = '/setup'
+      }
+    } catch (error) {
+      console.error('Error checking setup status:', error)
+      // Default to setup if error
+      window.location.href = '/setup'
+    }
+  }
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -85,7 +111,7 @@ function LoginContent() {
             AI-Powered Email Outreach
           </h2>
           <p className="text-primary-100 text-lg">
-            Automate your job search, sponsorship hunting, and freelance outreach 
+            Automate your job search, sponsorship hunting, and freelance outreach
             with intelligent, personalized emails powered by AI.
           </p>
           <ul className="mt-8 space-y-3">
@@ -151,9 +177,17 @@ function LoginContent() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                Password
-              </label>
+              <div className="flex items-center justify-between mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <a
+                  href="/forgot-password"
+                  className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+                >
+                  Forgot password?
+                </a>
+              </div>
               <input
                 id="password"
                 type="password"

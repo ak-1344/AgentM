@@ -153,3 +153,4 @@ Check the complete workflow for a new user.
 | Later on Ideas |
 - Keep a datasheet for related companies info (A crawler must not need to visit each company again and again)
 - Company info can become a table and have tags realted to job opportunities or fields
+- Instead of visiting dashboard again and again, telegram approval and edit [feature].

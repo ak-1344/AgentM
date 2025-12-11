@@ -62,7 +62,7 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getSession()
 
   // Protected routes that require authentication
-  const protectedRoutes = ['/dashboard', '/resume', '/context', '/email', '/settings']
+  const protectedRoutes = ['/home', '/profile', '/emails', '/logs', '/settings', '/setup']
   const isProtectedRoute = protectedRoutes.some(route => 
     req.nextUrl.pathname.startsWith(route)
   )
@@ -74,14 +74,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // Redirect to dashboard if accessing auth pages with active session
+  // Redirect to home if accessing auth pages with active session
   const authRoutes = ['/login', '/signup']
   const isAuthRoute = authRoutes.some(route => 
     req.nextUrl.pathname.startsWith(route)
   )
 
   if (isAuthRoute && session) {
-    return NextResponse.redirect(new URL('/dashboard', req.url))
+    return NextResponse.redirect(new URL('/home', req.url))
   }
 
   return response

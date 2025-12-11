@@ -51,6 +51,7 @@ tmp/
 
 # Logs
 logs/
+!frontend/app/logs
 *.log
 
 # OS

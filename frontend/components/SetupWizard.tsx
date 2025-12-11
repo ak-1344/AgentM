@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FileText, Upload, Target, Mail, CheckCircle2, Circle } from 'lucide-react'
+import { FileText, Upload, Target, Mail, CheckCircle2, Circle, User, Megaphone, MessageSquare, ClipboardCheck } from 'lucide-react'
 
 interface Step {
   number: number
@@ -16,13 +16,15 @@ interface SetupWizardProps {
   onStepChange: (step: number) => void
   children: React.ReactNode
   completedSteps: boolean[]
+  totalSteps?: number
 }
 
-export default function SetupWizard({ 
-  currentStep, 
-  onStepChange, 
+export default function SetupWizard({
+  currentStep,
+  onStepChange,
   children,
-  completedSteps 
+  completedSteps,
+  totalSteps = 7
 }: SetupWizardProps) {
   const steps: Step[] = [
     {
@@ -41,17 +43,38 @@ export default function SetupWizard({
     },
     {
       number: 3,
-      title: 'Setup Context',
-      description: 'Configure job search preferences',
-      icon: Target,
+      title: 'Basic Details',
+      description: 'Experience & preferences',
+      icon: User,
       completed: completedSteps[2]
     },
     {
       number: 4,
-      title: 'Email Integration',
+      title: 'Outreach Type',
+      description: 'Select your goal',
+      icon: Megaphone,
+      completed: completedSteps[3]
+    },
+    {
+      number: 5,
+      title: 'Tone & Style',
+      description: 'Choose communication style',
+      icon: MessageSquare,
+      completed: completedSteps[4]
+    },
+    {
+      number: 6,
+      title: 'Email Setup',
       description: 'Connect your email (optional)',
       icon: Mail,
-      completed: completedSteps[3]
+      completed: completedSteps[5]
+    },
+    {
+      number: 7,
+      title: 'Review',
+      description: 'Confirm & finish',
+      icon: ClipboardCheck,
+      completed: completedSteps[6]
     }
   ]
 
@@ -75,10 +98,10 @@ export default function SetupWizard({
                     disabled={!isClickable}
                     className={`
                       relative flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all
-                      ${isActive 
-                        ? 'border-primary-600 bg-primary-50 text-primary-600' 
-                        : isCompleted 
-                          ? 'border-green-500 bg-green-50 text-green-600' 
+                      ${isActive
+                        ? 'border-primary-600 bg-primary-50 text-primary-600'
+                        : isCompleted
+                          ? 'border-green-500 bg-green-50 text-green-600'
                           : 'border-gray-300 bg-white text-gray-400'
                       }
                       ${isClickable && !isActive ? 'cursor-pointer hover:border-primary-400' : ''}
@@ -94,7 +117,7 @@ export default function SetupWizard({
 
                   {/* Connector Line */}
                   {index < steps.length - 1 && (
-                    <div 
+                    <div
                       className={`
                         flex-1 h-0.5 mx-2 transition-all
                         ${isCompleted ? 'bg-green-500' : 'bg-gray-300'}
