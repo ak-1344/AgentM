@@ -1,0 +1,179 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f02b18be-1691-40fa-bf0e-390031c9163c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Simulating inputs from 'context_profiles' table\nconst target_roles = [\"Backend Developer\", \"AI Engineer\"];\nconst geography = [\"Remote\", \"USA\"];\n\n// Simulating the jobs found\nreturn {\n  \"jobs_found\": [\n    {\n      \"company\": \"ABC Corp\",\n      \"role\": \"Backend Developer\",\n      \"match_score\": 95,\n      \"source\": \"LinkedIn\"\n    },\n    {\n      \"company\": \"XYZ Inc\",\n      \"role\": \"AI Engineer\",\n      \"match_score\": 88,\n      \"source\": \"Indeed\"\n    }\n  ]\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f2da6a03-ec52-49f7-8775-d1ab6589b9e1",
+      "name": "JobDiscoveryAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  \"status\": \"success\",\n  \"ranked_jobs\": [\"Job A\", \"Job B\"]\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "473bb1e1-5088-4572-8325-a1cbeb9c55bb",
+      "name": "JobRankingAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  \"emails_sent\": 2,\n  \"errors\": 0\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        0
+      ],
+      "id": "84f9007b-70d1-4d19-8ad1-ea09e69aeb2d",
+      "name": "OutreachEmailAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  \"user_feedback\": \"none\",\n  \"preferences_updated\": false\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "edc531cf-2017-40c4-9865-6f900d926cc1",
+      "name": "ChatbotRefinementAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "return {\n  \"run_id\": \"test_run_001\",\n  \"timestamp\": new Date().toISOString()\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1264,
+        0
+      ],
+      "id": "7d35cedd-f6bc-4691-ace6-ee377bce871c",
+      "name": "Logging/EvaluationAgent"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nreturn {\n  // Matches the 'file_path' column in 'resumes' table\n  \"file_path\": \"users/123/resume.pdf\",\n\n  // Matches the 'parsed_data' column in 'resumes' table\n  \"parsed_data\": {\n    \"name\": \"John Doe\",\n    \"email\": \"john@test.com\",\n    \"skills\": [\"Python\", \"LangChain\", \"n8n\"],\n    \"experience\": \"3 years\"\n  },\n\n  // Matches 'is_parse_completed' column\n  \"is_parse_completed\": true\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "d8346b9c-81af-4d40-808b-e9f3ae6e0637",
+      "name": "ResumeParsingAgent"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "ResumeParsingAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JobDiscoveryAgent": {
+      "main": [
+        [
+          {
+            "node": "JobRankingAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JobRankingAgent": {
+      "main": [
+        [
+          {
+            "node": "OutreachEmailAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OutreachEmailAgent": {
+      "main": [
+        [
+          {
+            "node": "ChatbotRefinementAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ChatbotRefinementAgent": {
+      "main": [
+        [
+          {
+            "node": "Logging/EvaluationAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ResumeParsingAgent": {
+      "main": [
+        [
+          {
+            "node": "JobDiscoveryAgent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "c6a437fa-ad49-49af-a2d1-da9c0d14a3a1",
+  "meta": {
+    "instanceId": "ad0a12bf8603dda0a32abe9547ef92f59cba31cc4126c779d314886672705845"
+  },
+  "id": "C2rMV3nNOYbYP5b1",
+  "tags": []
+}
