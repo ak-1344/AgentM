@@ -6,6 +6,3 @@ USER root
 
 # Expose the port n8n runs on
 EXPOSE 5678
-
-# Command to start n8n
-CMD ["n8n", "start"]
