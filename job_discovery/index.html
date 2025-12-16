@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Discovery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .search-form {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 0.9em;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .skills-input {
+            grid-column: 1 / -1;
+        }
+
+        .skills-input input {
+            width: 100%;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 1.2em;
+        }
+
+        .results {
+            display: grid;
+            gap: 20px;
+        }
+
+        .results-header {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .job-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .job-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .job-company {
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .job-location {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .job-snippet {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .job-salary {
+            background: #f0f0f0;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .job-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .job-link:hover {
+            transform: scale(1.05);
+        }
+
+        .job-updated {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Job Discovery</h1>
+            <p>Find your dream job with Jooble API</p>
+        </div>
+
+        <div class="search-form">
+            <form id="searchForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="targetRole">Target Role</label>
+                        <input type="text" id="targetRole" placeholder="e.g., Data Scientist" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="jobType">Job Type</label>
+                        <select id="jobType" required>
+                            <option value="">Select job type</option>
+                            <option value="full-time">Full-Time</option>
+                            <option value="internship">Internship</option>
+                            <option value="part-time">Part-Time</option>
+                            <option value="contract">Contract</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="workMode">Work Mode</label>
+                        <select id="workMode" required>
+                            <option value="">Select work mode</option>
+                            <option value="remote">Remote</option>
+                            <option value="on-site">On-Site</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" placeholder="e.g., India" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="experienceLevel">Experience Level</label>
+                        <select id="experienceLevel">
+                            <option value="">Select experience</option>
+                            <option value="fresher">Fresher</option>
+                            <option value="entry">Entry Level</option>
+                            <option value="mid">Mid Level</option>
+                            <option value="senior">Senior</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="internshipPaid">
+                        <label for="internshipPaid">Paid Internship</label>
+                    </div>
+
+                    <div class="form-group skills-input">
+                        <label for="skills">Skills (comma separated, max 5)</label>
+                        <input type="text" id="skills" placeholder="e.g., python, machine learning, sql">
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">Search Jobs</button>
+            </form>
+        </div>
+
+        <div id="loading" class="loading" style="display: none;">
+            Searching for jobs...
+        </div>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('searchForm');
+        const resultsDiv = document.getElementById('results');
+        const loadingDiv = document.getElementById('loading');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Get form values
+            const skillsInput = document.getElementById('skills').value;
+            const skills = skillsInput ? skillsInput.split(',').map(s => s.trim()).filter(s => s) : [];
+
+            const requestData = {
+                search_constraints: {
+                    target_role: document.getElementById('targetRole').value,
+                    job_type: document.getElementById('jobType').value,
+                    internship_paid: document.getElementById('internshipPaid').checked,
+                    work_mode: document.getElementById('workMode').value,
+                    locations: [document.getElementById('location').value],
+                    experience_level: document.getElementById('experienceLevel').value
+                },
+                skill_keywords: skills.slice(0, 5)
+            };
+
+            // Show loading
+            loadingDiv.style.display = 'block';
+            resultsDiv.innerHTML = '';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/discover', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+
+                // Hide loading
+                loadingDiv.style.display = 'none';
+                submitBtn.disabled = false;
+
+                // Display results
+                if (Array.isArray(data) && data.length > 0) {
+                    displayJobs(data);
+                } else if (data.jobs && Array.isArray(data.jobs) && data.jobs.length > 0) {
+                    displayJobs(data.jobs);
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">No jobs found. Try different search criteria.</div>';
+                }
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                submitBtn.disabled = false;
+                resultsDiv.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+            }
+        });
+
+        function displayJobs(jobs) {
+            const count = jobs.length;
+            let html = `<div class="results-header">Found ${count} Job${count !== 1 ? 's' : ''}</div>`;
+
+            jobs.forEach(job => {
+                html += `
+                    <div class="job-card">
+                        <div class="job-title">${job.title || 'No Title'}</div>
+                        <div class="job-company">${job.company || 'Company not specified'}</div>
+                        <div class="job-location">📍 ${job.location || 'Location not specified'}</div>
+                        ${job.salary ? `<div class="job-salary">💰 ${job.salary}</div>` : ''}
+                        <div class="job-snippet">${job.snippet || 'No description available'}</div>
+                        ${job.link ? `<a href="${job.link}" target="_blank" class="job-link">View Job</a>` : ''}
+                        ${job.updated ? `<div class="job-updated">Updated: ${job.updated}</div>` : ''}
+                    </div>
+                `;
+            });
+
+            resultsDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
